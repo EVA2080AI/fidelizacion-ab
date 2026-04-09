@@ -72,13 +72,26 @@
         </div>
     </div>
 
+    <!-- Global Modal V18 -->
+    <div id="global-modal" class="overlay">
+        <div class="ab-modal glass-effect shadow-premium">
+            <div class="modal-header">
+                <h3 id="modal-title">Detalle</h3>
+                <button onclick="app.closeModal()" class="ab-btn" style="padding:4px;"><i data-lucide="x"></i></button>
+            </div>
+            <hr style="border:none; border-top:1px solid var(--bg-light); margin:0;">
+            <div id="modal-body" class="modal-content"></div>
+        </div>
+    </div>
+
     <!-- PWA / App Shell -->
     <div class="app-shell" style="display: none;">
         <!-- Persistent Side Chat (Desktop) -->
-        <aside class="chat-sidebar desktop-only glass-effect">
+        <aside id="app-sidebar" class="chat-sidebar glass-effect">
             <div class="sidebar-header">
                 <div class="status-dot"></div>
                 <span style="font-weight: 800; font-size: 0.9rem;">MELODY CLÍNICA</span>
+                <button class="mobile-only ab-btn" style="color:white; margin-left:auto;" onclick="app.toggleSidebar()"><i data-lucide="chevron-left"></i></button>
             </div>
             <div id="sidebar-chat-messages" class="chat-messages-container"></div>
             <div class="chat-input-row">
@@ -92,6 +105,7 @@
             <!-- Global Top Nav -->
             <header class="global-header glass-effect">
                 <div class="header-left">
+                    <button class="mobile-only ab-btn" style="margin-right:12px; padding:8px;" onclick="app.toggleSidebar()"><i data-lucide="menu"></i></button>
                     <div class="logo-mark" style="width: 32px; height: 32px; font-size: 0.8rem;">AB</div>
                     <div class="country-badge" id="current-country-badge">COL</div>
                     <div class="role-badge" id="current-role-badge">CLIENTE</div>

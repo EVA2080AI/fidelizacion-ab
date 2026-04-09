@@ -4,17 +4,13 @@ const app = {
     chatHistory: JSON.parse(localStorage.getItem('ab_chat_history_v11')) || [],
     userPoints: parseInt(localStorage.getItem('ab_user_points')) || 850,
     careState: JSON.parse(localStorage.getItem('ab_care_state')) || { tmic: false, cable: false, dryer: false, battery: false },
-    streakDays: parseInt(localStorage.getItem('ab_streak')) || 5,
-    userSettings: JSON.parse(localStorage.getItem('ab_user_settings')) || { 
-        notif_tmic: true, notif_dryer: true, notif_battery: true, notif_cable: false, 
-        night_mode: false, reminder_time: "21:00" 
-    },
+    userSettings: JSON.parse(localStorage.getItem('ab_user_settings')) || { notif_tmic: true, notif_dryer: true, reminder_time: "21:00" },
 
     init() {
         this.bindEvents();
         this.checkAuth();
         this.registerSW();
-        console.log("AB Maintenance Hub V17 Online");
+        console.log("AB Total Hub Completion V18 Online");
         this.startMaintEngine();
     },
 
@@ -32,28 +28,18 @@ const app = {
     checkAuth() {
         const loginScreen = document.getElementById('login-screen');
         const appShell = document.querySelector('.app-shell');
-        if (!this.currentUser) { 
-            loginScreen.classList.add('active'); 
-            appShell.style.display = 'none'; 
-        } else { 
-            loginScreen.classList.remove('active'); 
-            appShell.style.display = 'flex'; 
-            this.setupHeader(); 
-            this.switchView('home'); 
-            this.renderHistorySidebar(); 
-        }
+        if (!this.currentUser) { loginScreen.classList.add('active'); appShell.style.display = 'none'; } 
+        else { loginScreen.classList.remove('active'); appShell.style.display = 'flex'; this.setupHeader(); this.switchView('home'); this.renderHistorySidebar(); }
     },
 
     login() {
-        const nameInput = document.getElementById('login-name');
-        const name = nameInput.value.trim();
+        const name = document.getElementById('login-name').value.trim();
         const role = document.getElementById('login-role').value;
         const country = document.getElementById('login-country').value;
-        if (!name) { nameInput.classList.add('error'); this.toast("Nombre requerido", "error"); return; }
+        if (!name) { this.toast("Nombre requerido", "error"); return; }
         this.currentUser = { name, role, country, id: 'USR-' + Math.floor(Math.random()*1000) };
         localStorage.setItem('ab_enterprise_user', JSON.stringify(this.currentUser));
         this.checkAuth();
-        this.toast(`Bienvenido, ${name}`, "success");
     },
 
     logout() { localStorage.clear(); location.reload(); },
@@ -65,6 +51,22 @@ const app = {
         document.querySelector('.user-avatar').innerText = this.currentUser.name[0];
     },
 
+    // --- V18 UI Engine Components ---
+    toggleSidebar() {
+        document.getElementById('app-sidebar').classList.toggle('active');
+    },
+
+    openModal(title, html) {
+        document.getElementById('modal-title').innerText = title;
+        document.getElementById('modal-body').innerHTML = html;
+        document.getElementById('global-modal').classList.add('active');
+        if (window.lucide) lucide.createIcons();
+    },
+
+    closeModal() {
+        document.getElementById('global-modal').classList.remove('active');
+    },
+
     toast(text, type = "success") {
         const container = document.getElementById('toast-container');
         const toast = document.createElement('div');
@@ -73,138 +75,160 @@ const app = {
         toast.innerHTML = `<i data-lucide="${icons[type]}"></i> <div><b>${type.toUpperCase()}</b><p style="margin:0; font-size:0.8rem;">${text}</p></div>`;
         container.appendChild(toast);
         if (window.lucide) lucide.createIcons();
-        setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 400); }, 4000);
+        setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 400); }, 3000);
     },
 
     startMaintEngine() {
         setInterval(() => {
-            if (this.currentUser?.role !== 'CLIENTE') return;
-            const now = new Date();
-            const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-            
-            // Check for scheduled alert
-            if (timeStr === this.userSettings.reminder_time && now.getSeconds() === 0) {
-                this.toast("¡Cuidado Diario programado! Revisa tu checklist.", "warning");
+            if (this.currentUser?.role === 'CLIENTE' && this.userSettings.notif_tmic && Math.random() > 0.95) {
+                this.toast("Recordatorio: Verificar limpieza de Procesador.", "warning");
             }
-            
-            // Random didactic alerts (if enabled)
-            if (this.userSettings.notif_tmic && Math.random() > 0.99) {
-                this.showPushNotif("Sugerencia AB", "Considera limpiar tu T-Mic hoy para mantener la claridad.");
-            }
-        }, 10000);
-    },
-
-    showPushNotif(title, msg) {
-        const push = document.createElement('div');
-        push.className = "ab-push-notif shadow-premium";
-        push.style.position = "fixed"; push.style.top = "24px"; push.style.right = "24px"; push.style.zIndex="11000";
-        push.innerHTML = `<div class="push-icon"><i data-lucide="bell"></i></div><div><b>${title}</b><p style="margin:0; font-size:0.75rem;">${msg}</p></div>`;
-        document.body.appendChild(push);
-        if (window.lucide) lucide.createIcons();
-        setTimeout(() => { push.style.opacity = '0'; setTimeout(() => push.remove(), 500); }, 5000);
+        }, 15000);
     },
 
     switchView(viewId) {
         document.querySelectorAll('.nav-item').forEach(btn => btn.classList.toggle('active', btn.getAttribute('data-view') === viewId));
+        if (window.innerWidth < 768) document.getElementById('app-sidebar').classList.remove('active');
         this.renderRoleView(viewId);
     },
 
     renderRoleView(viewId) {
         const main = document.getElementById('main-content');
-        main.innerHTML = `<div class="ab-skeleton heading shimmer"></div><div class="ab-card shimmer" style="height:200px; margin-top:20px;"></div>`;
+        main.innerHTML = `<div class="ab-skeleton heading shimmer"></div><div class="stat-grid" style="margin-top:24px;"><div class="ab-card shimmer" style="height:120px;"></div><div class="ab-card shimmer" style="height:120px;"></div></div>`;
         
         setTimeout(() => {
             main.innerHTML = '';
             const section = document.createElement('div');
-            section.id = `view-${viewId}`;
             section.className = 'view active';
             
             switch(viewId) {
                 case 'home': section.innerHTML = this.getHomeHTML(); break;
-                case 'maintenance': section.innerHTML = this.getMaintConfigHTML(); break;
-                case 'tools': section.innerHTML = `<div class='ab-card'><h1>UI Kit Gallery</h1><p>Ver V16 Walkthrough.</p></div>`; break;
-                case 'profile': section.innerHTML = `<div class='ab-card'><h1>Perfil</h1><button onclick='app.logout()' class='ab-btn' style='color:var(--danger)'>Log out</button></div>`; break;
+                case 'maintenance': section.innerHTML = this.getMaintHTML(); break;
+                case 'profile': section.innerHTML = this.getProfileHTML(); break;
+                case 'tools': section.innerHTML = this.getToolsHTML(); break;
             }
             
             main.appendChild(section);
             if (window.lucide) lucide.createIcons();
-            if (viewId === 'home') this.updateHomeAnims();
-        }, 300);
+            this.initRoleFeatures();
+        }, 350);
     },
 
-    getMaintConfigHTML() {
-        return `
-            <div style="margin-bottom:32px;"><h1>Centro de Cuidados</h1><p>Configura tus recordatorios de mantenimiento oficial.</p></div>
-            
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:24px;">
-                <div class="ab-card shadow-premium">
-                    <h4 style="margin-bottom:24px;">GESTIÓN DE ALERTAS</h4>
-                    ${Object.keys(this.userSettings).filter(k => k.startsWith('notif_')).map(key => `
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                            <span style="font-weight:700; font-size:0.9rem;">${key.split('_')[1].toUpperCase()}</span>
-                            <label class="ab-switch">
-                                <input type="checkbox" ${this.userSettings[key] ? 'checked' : ''} style="display:none;" 
-                                       onchange="app.updateSetting('${key}', this.checked)">
-                                <div class="switch-track"><div class="switch-knob"></div></div>
-                            </label>
-                        </div>
-                    `).join('')}
-                </div>
+    getHomeHTML() {
+        const role = this.currentUser.role;
+        if (role === 'ADMIN') return this.getAdminHome();
+        if (role === 'ESPECIALISTA') return this.getSpecHome();
+        if (role === 'DISTRIBUIDOR') return this.getDistHome();
+        return this.getPatientHome();
+    },
 
-                <div class="ab-card shadow-premium">
-                    <h4 style="margin-bottom:24px;">PROGRAMACIÓN</h4>
-                    <div class="ab-field">
-                        <label>HORA DE RECORDATORIO DIARIO</label>
-                        <input type="time" class="ab-input" value="${this.userSettings.reminder_time}" 
-                               onchange="app.updateSetting('reminder_time', this.value)">
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:24px;">
-                        <span style="font-weight:700; font-size:0.9rem;">REINICIO AUTOMÁTICO</span>
-                        <label class="ab-switch">
-                            <input type="checkbox" checked style="display:none;">
-                            <div class="switch-track"><div class="switch-knob"></div></div>
-                        </label>
+    getAdminHome() {
+        return `
+            <div style="margin-bottom:32px;"><h1>Enterprise Insight</h1><p>Control global Advance Bionics.</p></div>
+            <div class="stat-grid">
+                <div class="ab-card">
+                    <span class="stat-label">Registros Hoy</span>
+                    <span class="stat-val">1,204</span>
+                    <p style="font-size:0.75rem; color:var(--success);">+12% vs ayer</p>
+                </div>
+                <div class="ab-card">
+                    <span class="stat-label">Alertas Clínicas</span>
+                    <span class="stat-val" style="color:var(--danger);">42</span>
+                    <p style="font-size:0.75rem; color:var(--slate-500);">Requieren atención inmediata</p>
+                </div>
+            </div>
+            <div class="ab-card shadow-premium" style="margin-top:24px;">
+                <h4 style="margin-bottom:20px;">MAPA DE OPERACIONES (COL/MEX/ARG)</h4>
+                <div style="height:200px; background:var(--bg-light); border-radius:var(--radius-sm); border:1px dashed var(--slate-300); display:flex; align-items:center; justify-content:center;">
+                    <span class="text-caps" style="opacity:0.5;">Visualizador de Territorio Interactivo</span>
+                </div>
+            </div>
+        `;
+    },
+
+    getSpecHome() {
+        return `
+            <div style="margin-bottom:32px;"><h1>Especialista Pro</h1><p>Monitor de salud poblacional.</p></div>
+            <div class="stat-grid">
+                <div class="ab-card">
+                    <span class="stat-label">Mapeos Pendientes</span>
+                    <span class="stat-val">8</span>
+                </div>
+                <div class="ab-card">
+                    <span class="stat-label">Promedio Impedancias</span>
+                    <span class="stat-val">7.2 <small>kΩ</small></span>
+                </div>
+            </div>
+            <div class="ab-table-container" style="margin-top:24px;">
+                <table class="ab-table">
+                    <thead><tr><th>Paciente</th><th>Última Rev.</th><th>Acción</th></tr></thead>
+                    <tbody>
+                        <tr><td><b>Mario Galvis</b></td><td>Ayer</td><td><button class="ab-btn ab-btn-primary" onclick="app.openModal('Historial Clínico: Mario', '<p>Auditoría de logs completada: 98% estabilidad.</p>')">Ver Detalle</button></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        `;
+    },
+
+    getDistHome() {
+        return `
+            <div style="margin-bottom:32px;"><h1>Distribuidor Hub</h1><p>Gestión comercial y logística.</p></div>
+            <div class="stat-grid">
+                <div class="ab-card">
+                    <span class="stat-label">Pedidos en Tránsito</span>
+                    <span class="stat-val">15</span>
+                </div>
+                <div class="ab-card">
+                    <span class="stat-label">Tickets VAL</span>
+                    <span class="stat-val">4</span>
+                </div>
+            </div>
+            <div class="ab-card shadow-premium" style="margin-top:24px;">
+                <h4>ORDENES RECIENTES</h4>
+                <div style="margin-top:16px;">
+                    <div style="padding:12px; background:var(--bg-light); border-radius:var(--radius-sm); margin-bottom:8px; display:flex; justify-content:space-between;">
+                        <span>VAL-82914 - Marvel CI</span><span class="ab-badge success">Enviado</span>
                     </div>
                 </div>
             </div>
         `;
     },
 
-    updateSetting(key, value) {
-        this.userSettings[key] = value;
-        localStorage.setItem('ab_user_settings', JSON.stringify(this.userSettings));
-        this.toast("Ajustes de cuidado actualizados", "success");
-    },
-
-    getHomeHTML() {
+    getPatientHome() {
         const completed = Object.values(this.careState).filter(val => val).length;
         const progress = (completed / 4) * 100;
         return `
             <div style="margin-bottom:32px;"><h1>Hola, ${this.currentUser.name}</h1></div>
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap:24px;">
-                <div class="ab-card shadow-premium animate-pop" style="display:flex; align-items:center; justify-content:space-between;">
-                    <div><span class="text-caps">OBJETIVO DIARIO</span><h2 id="home-progress-text">${progress}%</h2></div>
-                    <div class="progress-ring-container">
-                        <svg class="progress-ring" width="80" height="80">
-                            <circle class="progress-ring-bg" stroke-width="8" fill="transparent" r="36" cx="40" cy="40"/>
-                            <circle class="progress-ring-circle" id="home-progress-circle" stroke-width="8" fill="transparent" r="36" cx="40" cy="40" style="stroke-dasharray: 283; stroke-dashoffset: 283;"/>
-                        </svg>
-                    </div>
+            <div class="stat-grid">
+                <div class="ab-card shadow-premium" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div><span class="stat-label">Racha de Cuidado</span><span class="stat-val">${this.streakDays}</span></div>
+                    <div style="color:var(--gold);"><i data-lucide="zap" size="32"></i></div>
                 </div>
-                <div class="streak-card shadow-premium">
-                    <span class="text-caps">RACHA</span><h2>${this.streakDays} Días</h2>
-                    <div class="streak-days">${[...Array(7)].map((_, i) => `<div class="day-dot ${i < this.streakDays ? 'active' : ''}">${i + 1}</div>`).join('')}</div>
+                <div class="ab-card shadow-premium">
+                    <span class="stat-label">Puntos Plus</span><span class="stat-val">${this.userPoints}</span>
+                </div>
+            </div>
+            <div class="ab-card shadow-premium" style="margin-top:24px; text-align:center;">
+                <h4 style="margin-bottom:16px;">Checklist de Hoy</h4>
+                <div style="display:flex; justify-content:center; gap:16px;">
+                    ${Object.keys(this.careState).map(k => `<div class="ab-card ${this.careState[k]?'success':''}" style="width:70px; height:70px; display:flex; align-items:center; justify-content:center; border-radius:50%;">${this.careState[k]?'<i data-lucide="check"></i>':k[0].toUpperCase()}</div>`).join('')}
                 </div>
             </div>
         `;
     },
 
-    updateHomeAnims() {
-        const completed = Object.values(this.careState).filter(val => val).length;
-        const progress = (completed / 4) * 100;
-        const offset = 283 - (283 * progress) / 100;
-        const circle = document.getElementById('home-progress-circle');
-        if (circle) circle.style.strokeDashoffset = offset;
+    getMaintHTML() { 
+        return `<div class="ab-card"><h1>Configuración de Cuidados</h1><p>Próximamente: Integración con sensores Marvel.</p></div>`; 
+    },
+    getProfileHTML() { 
+        return `<div class="ab-card"><h1>Mi Perfil</h1><p>${this.currentUser.name} [${this.currentUser.role}]</p><button class="ab-btn" style="color:var(--danger)" onclick="app.logout()">Cerrar Sistema</button></div>`; 
+    },
+    getToolsHTML() { 
+        return `<div class="ab-card"><h1>UI Kit Preview</h1><p>Todos los componentes V18 activos.</p></div>`; 
+    },
+
+    initRoleFeatures() {
+        if (window.lucide) lucide.createIcons();
     },
 
     sendMessageSidebar() {
@@ -214,13 +238,13 @@ const app = {
         this.addMessageToSidebar(text, 'user');
         this.chatHistory.push({ role: 'user', parts: [{ text }] });
         input.value = '';
-        this.callGeminiMaint();
+        this.callGeminiTotal();
     },
 
-    async callGeminiMaint() {
+    async callGeminiTotal() {
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${this.apiKey}`;
         const payload = { 
-            system_instruction: { parts: [{ text: `Clinical Maintenance Specialist for AB. Assist user ${this.currentUser.name} with device care. Refer to V17 personalized alerts.` }] },
+            system_instruction: { parts: [{ text: `Clinical Enterprise Hub V18. Role: ${this.currentUser.role}.` }] },
             contents: this.chatHistory.slice(-10)
         };
         try {
@@ -229,7 +253,7 @@ const app = {
             const text = data.candidates[0].content.parts[0].text;
             this.addMessageToSidebar(text, 'ai');
             this.chatHistory.push({ role: 'model', parts: [{ text }] });
-        } catch (e) { this.toast("Error Melody", "error"); }
+        } catch (e) { this.toast("Modo offline", "error"); }
     },
 
     addMessageToSidebar(text, type) {

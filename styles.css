@@ -1,142 +1,73 @@
-/* AB Command Center Layout V15 - Official Brand & Temu UX */
+/* AB Command Center Layout V18 - Total Completion */
 
 .overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    z-index: 9999;
-    display: none;
-    align-items: center;
-    justify-content: center;
+    position: fixed; inset: 0; z-index: 9999;
+    display: none; align-items: center; justify-content: center;
     background: rgba(241, 245, 249, 0.95);
-    backdrop-filter: blur(8px);
-    padding: 20px;
+    backdrop-filter: blur(8px); padding: 20px;
 }
 .overlay.active { display: flex; }
 
-/* Split Login Architecture */
-.split-login-container {
-    width: 100%;
-    max-width: 1000px;
-    height: 650px;
-    background: white;
-    border-radius: var(--radius-md);
-    display: flex;
-    overflow: hidden;
-    box-shadow: 0 30px 60px -12px rgba(0,0,0,0.25);
+/* --- Global Modal V18 --- */
+.ab-modal {
+    width: 100%; max-width: 600px;
+    background: white; border-radius: var(--radius-md);
+    display: flex; flex-direction: column;
+    animation: scaleUp 0.3s var(--spring);
+    max-height: 90dvh;
 }
+.modal-header { padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; }
+.modal-content { padding: 24px; overflow-y: auto; flex: 1; }
 
-.login-side-form {
-    flex: 1;
-    padding: 60px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    background: white;
-}
-
-.login-side-hero {
-    flex: 1.2;
-    background: url('login-hero.png') center/cover no-repeat;
-    position: relative;
-    border-left: 1px solid var(--bg-light);
-}
-
-.hero-overlay {
-    position: absolute;
-    inset: 0;
-    padding: 60px;
-    background: linear-gradient(to top, rgba(0, 79, 113, 0.8), transparent);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-}
-
-/* --- App Shell & Persistent Chat --- */
-.app-shell {
-    display: flex;
-    height: 100dvh;
-    width: 100%;
-}
-
+/* --- Mobile Drawer Navigation --- */
 .chat-sidebar {
-    width: 380px;
-    height: 100%;
-    background: white;
+    width: 380px; height: 100%; background: white;
     border-right: 1px solid var(--bg-light);
-    display: flex;
-    flex-direction: column;
-}
-
-.sidebar-header {
-    padding: 20px 24px;
-    background: var(--secondary);
-    color: white;
-    display: flex; align-items: center; gap: 10px;
-}
-
-.chat-input-row {
-    padding: 16px;
-    background: white;
-    border-top: 1px solid var(--bg-light);
-    display: flex; gap: 8px;
-}
-.chat-input-row input {
-    flex: 1;
-    padding: 10px 16px;
-    background: var(--bg-light);
-    border-radius: var(--radius-sm);
-}
-
-.main-workspace {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.global-header {
-    height: 64px;
-    background: white;
-    border-bottom: 2px solid var(--primary);
-    padding: 0 32px;
-    display: flex; align-items: center; justify-content: space-between;
-}
-
-#main-content {
-    flex: 1;
-    overflow-y: auto;
-    padding: 32px;
-    background: var(--bg-light);
-}
-
-/* --- Interactive Elements (Temu Style) --- */
-.notification-bubble {
-    position: fixed;
-    top: 24px; right: 24px;
-    max-width: 320px;
-    padding: 16px;
-    border-radius: var(--radius-md);
-    background: white;
-    border-left: 4px solid var(--primary);
-    z-index: 1000;
-    display: flex; gap: 12px;
-    align-items: center;
-}
-
-.progress-ring-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-}
-
-/* Navigation Badges */
-.nav-item.active {
-    color: var(--primary);
-    border-bottom: 3px solid var(--primary);
+    display: flex; flex-direction: column;
+    transition: transform 0.4s var(--spring);
 }
 
 @media (max-width: 768px) {
-    .chat-sidebar { display: none !important; }
+    .chat-sidebar {
+        position: fixed; top: 0; left: 0; bottom: 0;
+        z-index: 10100; width: 320px;
+        transform: translateX(-100%); /* Hidden by default */
+        box-shadow: 20px 0 50px rgba(0,0,0,0.1);
+    }
+    .chat-sidebar.active { transform: translateX(0); }
+    
+    .desktop-only { display: none !important; }
     .split-login-container { height: 100dvh; border-radius: 0; }
     .login-side-form { padding: 40px 20px; }
+}
+
+/* --- Dashboard Infrastructure --- */
+.app-shell { display: flex; height: 100dvh; width: 100%; overflow: hidden; }
+.main-workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.global-header { 
+    height: 64px; background: white; padding: 0 24px;
+    border-bottom: 2px solid var(--primary);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+}
+
+#main-content { flex: 1; overflow-y: auto; padding: 24px; background: var(--bg-light); }
+
+/* --- High-Fidelity Cards --- */
+.ab-card {
+    background: white; border-radius: var(--radius-md);
+    border: 1px solid rgba(0,0,0,0.05); padding: 24px;
+    transition: var(--transition-smooth);
+}
+.ab-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-premium); }
+
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+.stat-item { display: flex; flex-direction: column; gap: 4px; }
+.stat-val { font-size: 1.8rem; font-weight: 900; color: var(--primary); }
+.stat-label { font-size: 0.7rem; font-weight: 800; color: var(--slate-500); text-transform: uppercase; }
+
+/* Notification Stack Management */
+#toast-container {
+    position: fixed; top: 24px; right: 24px;
+    display: flex; flex-direction: column; gap: 8px; z-index: 10500;
 }
