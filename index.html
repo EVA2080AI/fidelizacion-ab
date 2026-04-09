@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advance Bionics | Hub de Cuidado</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <!-- Onboarding Overlay -->
+    <div id="onboarding-overlay">
+        <div class="onboarding-card">
+            <div id="onboarding-step-1" class="onboarding-content">
+                <i data-lucide="shield-check" style="width: 64px; height: 64px; color: var(--primary); margin-bottom: 24px;"></i>
+                <h2>Bienvenido a tu Hub de Cuidado</h2>
+                <p style="color: var(--text-muted); margin: 16px 0 32px;">Diseñado para que tu audición con Advance Bionics sea siempre óptima. Gestiona tu garantía y beneficios en un solo lugar.</p>
+                <button class="btn btn-primary" style="background: var(--primary); color: white; width: 100%; border: none; padding: 14px; border-radius: 8px; font-weight: 600; cursor: pointer;" onclick="app.nextOnboarding(2)">Comenzar</button>
+            </div>
+            <div id="onboarding-step-2" class="onboarding-content" style="display: none;">
+                <i data-lucide="sparkles" style="width: 64px; height: 64px; color: var(--warning); margin-bottom: 24px;"></i>
+                <h2>Beneficios Progresivos</h2>
+                <p style="color: var(--text-muted); margin: 16px 0 32px;">A medida que cuidas tu dispositivo, desbloqueas nuevos niveles: desde limpiezas gratuitas hasta extensiones de garantía.</p>
+                <button class="btn btn-primary" style="background: var(--primary); color: white; width: 100%; border: none; padding: 14px; border-radius: 8px; font-weight: 600; cursor: pointer;" onclick="app.nextOnboarding(3)">Siguiente</button>
+            </div>
+            <div id="onboarding-step-3" class="onboarding-content" style="display: none;">
+                <i data-lucide="bot" style="width: 64px; height: 64px; color: var(--primary); margin-bottom: 24px;"></i>
+                <h2>Asistente con IA Real</h2>
+                <p style="color: var(--text-muted); margin: 16px 0 32px;">Tu asistente está listo para ayudarte con soporte técnico y dudas de salud en tiempo real.</p>
+                <button class="btn btn-primary" style="background: var(--primary); color: white; width: 100%; border: none; padding: 14px; border-radius: 8px; font-weight: 600; cursor: pointer;" onclick="app.finishOnboarding()">Entrar al Hub</button>
+            </div>
+            <div class="onboarding-steps" style="margin-top: 24px;">
+                <div class="step-dot active" id="dot-1"></div>
+                <div class="step-dot" id="dot-2"></div>
+                <div class="step-dot" id="dot-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <nav class="main-nav">
+            <div class="logo-container">
+                <div class="logo-mark">AB</div>
+                <span class="logo-text">Advance Bionics</span>
+            </div>
+            <div class="nav-links">
+                <button class="nav-item active" data-view="home">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button class="nav-item" data-view="benefits">
+                    <i data-lucide="award"></i>
+                    <span>Beneficios</span>
+                </button>
+                <button class="nav-item" data-view="care">
+                    <i data-lucide="activity"></i>
+                    <span>Cuidado</span>
+                </button>
+                <button class="nav-item" data-view="assistant">
+                    <i data-lucide="message-square"></i>
+                    <span>Asistente</span>
+                </button>
+                <button class="nav-item" data-view="profile">
+                    <i data-lucide="user"></i>
+                    <span>Mi Perfil</span>
+                </button>
+            </div>
+            <div class="nav-footer">
+                <button class="nav-item" style="color: #ef4444; margin-bottom: 12px; font-size: 0.8rem;" onclick="app.clearChat()">
+                    <i data-lucide="trash-2"></i>
+                    <span>Limpiar Chat</span>
+                </button>
+                <div class="sf-badge">
+                    <i data-lucide="cloud-check"></i>
+                    <span>Salesforce Health Sync</span>
+                </div>
+            </div>
+        </nav>
+
+        <main id="main-content">
+            <section id="view-home" class="view active">
+                <div class="header-section">
+                    <h1>Hola de nuevo, Juan</h1>
+                    <p>Hoy es un buen día para cuidar tu audición.</p>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <h3>Días de Garantía Restante</h3>
+                        <div class="countdown-display">
+                            <span id="days-count">730</span>
+                            <small>DÍAS</small>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" style="width: 85%;"></div>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 16px;">
+                            <i data-lucide="calendar" style="width: 14px; vertical-align: middle;"></i>
+                            Expira el 14 de Abril, 2028
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <h3>Nivel de Fidelidad</h3>
+                        <div style="display: flex; align-items: center; gap: 20px;">
+                            <div style="background: #fef3c7; color: #d97706; padding: 16px; border-radius: 12px;">
+                                <i data-lucide="medal" style="width: 32px; height: 32px;"></i>
+                            </div>
+                            <div>
+                                <h4 style="font-size: 1.25rem; font-weight: 700;">Nivel Gold</h4>
+                                <p style="color: var(--text-muted); font-size: 0.9rem;">250 pts para Platinum</p>
+                            </div>
+                        </div>
+                        <button class="nav-item" style="margin-top: 24px; padding: 8px 0; color: var(--primary);" onclick="app.switchView('benefits')">Ver escala de beneficios →</button>
+                    </div>
+
+                    <div class="card">
+                        <h3>Estado del Dispositivo</h3>
+                        <div style="display: flex; flex-direction: column; gap: 16px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 0.95rem;">Procesador Naída CI M90</span>
+                                <span style="background: #ecfdf5; color: #059669; padding: 4px 12px; border-radius: 99px; font-size: 0.75rem; font-weight: 600;">ACTIVO</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 0.95rem;">Batería</span>
+                                <span style="font-weight: 600;">88%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                        <i data-lucide="help-circle" style="width: 32px; height: 32px; color: var(--primary); margin-bottom: 12px;"></i>
+                        <h3>¿Necesitas ayuda?</h3>
+                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Consulta a nuestra IA especializada.</p>
+                        <button class="btn" style="background: var(--primary); color: white; padding: 10px 24px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;" onclick="app.switchView('assistant')">Hablar con IA</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="ai-fab" id="ai-fab" onclick="app.switchView('assistant')">
+        <i data-lucide="message-circle"></i>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
