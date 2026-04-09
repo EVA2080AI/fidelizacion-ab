@@ -1,61 +1,82 @@
-/* AB Enterprise Components V11 */
+/* AB Official Components V15 - Temu Style */
 
-/* Global Data Table */
-.ab-table-container { 
-    width: 100%; overflow-x: auto; 
-    border-radius: 16px; border: 1px solid var(--slate-200); 
-    background: white; margin-top: 24px;
+/* Progress Ring (Temu UI) */
+.progress-ring {
+    transform: rotate(-90deg);
 }
-.ab-table { 
-    width: 100%; border-collapse: collapse; text-align: left; 
+.progress-ring-circle {
+    transition: stroke-dashoffset 0.8s ease;
+    stroke: var(--primary);
+    stroke-linecap: round;
 }
-.ab-table th { 
-    background: var(--slate-50); padding: 16px 20px; 
-    font-size: 0.75rem; font-weight: 800; color: var(--slate-500);
-    text-transform: uppercase; border-bottom: 1px solid var(--slate-200);
-}
-.ab-table td { 
-    padding: 18px 20px; font-size: 0.9rem; border-bottom: 1px solid var(--slate-50); 
-}
-.ab-table tr:hover { background: var(--blue-50); }
-
-/* Tracker Component (Warranties) */
-.ab-tracker {
-    display: flex; justify-content: space-between; position: relative;
-    padding: 40px 0; margin-top: 20px;
-}
-.ab-tracker::before {
-    content:''; position:absolute; top:52px; left:0; right:0; height:4px; 
-    background:var(--slate-200); z-index:1;
-}
-.tracker-step { 
-    position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 12px;
-    width: 80px;
-}
-.step-dot { 
-    width: 24px; height: 24px; border-radius: 50%; background: white; 
-    border: 4px solid var(--slate-200); transition: all 0.4s;
-}
-.tracker-step.active .step-dot { border-color: var(--primary); transform: scale(1.2); }
-.tracker-step.completed .step-dot { background: var(--primary); border-color: var(--primary); }
-.step-label { font-size: 0.65rem; font-weight: 800; color: var(--slate-500); text-align: center; }
-
-/* Status Badges */
-.status-pill {
-    padding: 6px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 800;
-}
-.status-pill.pending { background: #fef3c7; color: #92400e; }
-.status-pill.approved { background: #d1fae5; color: #065f46; }
-.status-pill.active { background: #dbeafe; color: #1e40af; }
-
-/* Standby Overlay */
-.standby-overlay {
-    text-align: center; padding: 60px 40px;
+.progress-ring-bg {
+    stroke: var(--bg-light);
 }
 
-/* Dashboard Cards V11 */
-.stat-card {
-    padding: 24px; border-radius: 20px; background: white; border: 1px solid var(--slate-100);
+/* Notification Bubble */
+.ab-notif {
+    background: white;
+    border-radius: var(--radius-md);
+    padding: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    display: flex; gap: 12px;
+    align-items: center;
+    border-left: 4px solid var(--primary);
+    margin-bottom: 12px;
+    animation: scaleUp 0.4s var(--spring);
 }
-.stat-card h2 { font-size: 2.5rem; font-weight: 900; color: var(--primary); margin: 8px 0; }
-.stat-card p { font-size: 0.85rem; color: var(--slate-500); }
+.ab-notif i { color: var(--primary); font-size: 1.2rem; }
+
+/* Interactive Streak Card */
+.streak-card {
+    background: linear-gradient(135deg, var(--primary), #00BFB2);
+    color: white;
+    padding: 24px;
+    border-radius: var(--radius-lg);
+    position: relative;
+    overflow: hidden;
+}
+.streak-card h3 { color: white; margin-top: 8px; }
+.streak-days {
+    display: flex; gap: 8px; margin-top: 16px;
+}
+.day-dot {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 800;
+}
+.day-dot.active { background: white; color: var(--primary); }
+
+/* Official Tables & Badges */
+.ab-table {
+    width: 100%; border-radius: var(--radius-md); overflow: hidden;
+    background: white; border: 1px solid var(--bg-light);
+}
+.ab-table th {
+    background: var(--bg-light); padding: 12px 20px;
+    text-align: left; font-size: 0.75rem; text-transform: uppercase;
+}
+.ab-table td { padding: 16px 20px; border-bottom: 1px solid var(--bg-light); }
+
+/* Temu-style Action Button */
+.ab-action-btn {
+    padding: 14px 24px;
+    background: var(--primary);
+    color: white; font-weight: 800;
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.ab-action-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 163, 218, 0.4); }
+
+/* Maintenance Bubble (Floating) */
+.maint-bubble {
+    padding: 8px 16px;
+    background: var(--warning);
+    color: white;
+    font-size: 0.75rem; font-weight: 900;
+    border-radius: 20px;
+    position: absolute; top: -10px; right: -10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
