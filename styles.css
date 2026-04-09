@@ -1,18 +1,64 @@
-/* AB Command Center Layout V11 */
+/* AB Command Center Layout V13 - Split Login */
 
 .enterprise-layout {
     background: var(--slate-100);
     height: 100dvh;
     overflow: hidden;
+    font-family: 'Inter', sans-serif;
 }
 
+/* --- Split Login Screen --- */
+#login-screen.overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(241, 245, 249, 0.8);
+    backdrop-filter: blur(20px);
+}
+
+.split-login-container {
+    width: 100%;
+    max-width: 1100px;
+    height: 700px;
+    background: white;
+    border-radius: 32px;
+    display: flex;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.4);
+}
+
+.login-side-form {
+    flex: 1;
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: white;
+}
+
+.login-side-hero {
+    flex: 1.2;
+    background: url('login-hero.png') center/cover no-repeat;
+    position: relative;
+}
+
+.hero-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 60px;
+    background: linear-gradient(to top, rgba(0, 102, 178, 0.9), transparent);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+/* --- Dashboard Shell --- */
 .app-shell {
     display: flex;
     height: 100%;
     width: 100%;
 }
 
-/* --- Persistent Chat Sidebar (Left) --- */
 .chat-sidebar {
     width: 380px;
     height: 100%;
@@ -57,7 +103,6 @@
     border-radius: 12px; display: flex; align-items: center; justify-content: center;
 }
 
-/* --- Main Workspace & Header --- */
 .main-workspace {
     flex: 1;
     display: flex;
@@ -73,42 +118,25 @@
     border-bottom: 1px solid var(--slate-200);
     padding: 0 40px;
     display: flex; align-items: center; justify-content: space-between;
-    z-index: 50;
 }
 
 .header-left { display: flex; align-items: center; gap: 16px; }
 .country-badge { padding: 4px 10px; background: var(--slate-100); border-radius: 6px; font-weight: 800; font-size: 0.8rem; }
 .role-badge { padding: 4px 10px; background: var(--blue-50); color: var(--primary); border-radius: 6px; font-weight: 800; font-size: 0.8rem; }
 
-.header-right { display: flex; align-items: center; gap: 24px; }
-.header-user { display: flex; align-items: center; gap: 12px; cursor: pointer; }
-.header-user span { font-weight: 700; font-size: 0.9rem; }
-.user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; }
-
 #main-content {
     flex: 1;
     overflow-y: auto;
     padding: 40px;
-    width: 100%;
-    max-width: 1600px;
-    margin: 0 auto;
 }
 
-/* --- Responsive Adaptations --- */
-@media (max-width: 1024px) {
-    .chat-sidebar { width: 320px; }
-}
-
+/* --- Mobile --- */
 @media (max-width: 768px) {
+    .split-login-container { border-radius: 0; min-height: 100dvh; }
+    .login-side-form { padding: 40px 24px; }
     .chat-sidebar { display: none !important; }
-    .global-header { padding: 0 20px; height: calc(64px + env(safe-area-inset-top)); padding-top: env(safe-area-inset-top); }
-    #main-content { padding: 24px; padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
 }
 
-/* --- View Transitions --- */
 .view { display: none; }
 .view.active { display: block; animation: fadeInScale 0.4s var(--spring) forwards; }
-
-.field-label {
-    display: block; margin-bottom: 8px; font-weight: 800; font-size: 0.7rem; color: var(--primary); letter-spacing: 0.05em;
-}
+.field-label { display: block; margin-bottom: 8px; font-weight: 800; font-size: 0.7rem; color: var(--primary); letter-spacing: 0.05em; }

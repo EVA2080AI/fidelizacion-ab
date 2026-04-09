@@ -23,40 +23,52 @@
 <body class="enterprise-layout">
     <div id="toast-container"></div>
 
-    <!-- Login V11 (Enterprise Auth) -->
+    <!-- Login V13 (Split-Pane Enterprise) -->
     <div id="login-screen" class="overlay active">
-        <div class="login-card ab-card glass-effect shadow-premium">
-            <div class="logo-mark" style="width: 64px; height: 64px; font-size: 1.5rem; margin: 0 auto 24px;">AB</div>
-            <h1 style="font-size: 1.75rem; font-weight: 900;">Command Center</h1>
-            <p style="color: var(--slate-500); margin-top: 4px;">Selecciona tu perfil de acceso.</p>
-            
-            <div style="margin-top: 32px; text-align: left;">
-                <label class="field-label">NOMBRE DE USUARIO</label>
-                <input type="text" id="login-name" placeholder="Ej. Juan Pérez" class="ab-input">
-            </div>
+        <div class="split-login-container glass-effect shadow-premium">
+            <!-- Left: Form -->
+            <div class="login-side-form">
+                <div class="logo-mark" style="width: 56px; height: 56px; font-size: 1.2rem; margin-bottom: 24px;">AB</div>
+                <h1 style="font-size: 2.2rem; font-weight: 900; line-height: 1.1; letter-spacing: -0.04em;">Command<br>Center</h1>
+                <p style="color: var(--slate-500); margin-top: 12px; font-size: 0.95rem;">Acceso seguro al ecosistema global de Advance Bionics.</p>
+                
+                <div style="margin-top: 40px; text-align: left;">
+                    <label class="field-label">NOMBRE COMPLETO</label>
+                    <input type="text" id="login-name" placeholder="Tu nombre" class="ab-input" style="background: white; border: 1px solid var(--slate-200);">
+                </div>
 
-            <div style="margin-top: 16px; text-align: left; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                <div>
-                    <label class="field-label">ROL</label>
-                    <select id="login-role" class="ab-input">
-                        <option value="CLIENTE">Paciente</option>
-                        <option value="ESPECIALISTA">Especialista</option>
-                        <option value="DISTRIBUIDOR">Distribuidor</option>
-                        <option value="ADMIN">Meta Usuario</option>
-                    </select>
+                <div style="margin-top: 20px; text-align: left; display: grid; grid-template-columns: 1fr; gap: 20px;">
+                    <div>
+                        <label class="field-label">ROL DE ACCESO</label>
+                        <select id="login-role" class="ab-input" style="background: white; border: 1px solid var(--slate-200);">
+                            <option value="CLIENTE">Paciente</option>
+                            <option value="ESPECIALISTA">Especialista</option>
+                            <option value="DISTRIBUIDOR">Distribuidor</option>
+                            <option value="ADMIN">Meta Usuario</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="field-label">REGIÓN OPERATIVA</label>
+                        <select id="login-country" class="ab-input" style="background: white; border: 1px solid var(--slate-200);">
+                            <option value="COL">Colombia 🇨🇴</option>
+                            <option value="MEX">México 🇲🇽</option>
+                            <option value="ARG">Argentina 🇦🇷</option>
+                            <option value="CRI">Costa Rica 🇨🇷</option>
+                        </select>
+                    </div>
                 </div>
-                <div>
-                    <label class="field-label">PAÍS</label>
-                    <select id="login-country" class="ab-input">
-                        <option value="COL">🇨🇴 Colombia</option>
-                        <option value="MEX">🇲🇽 México</option>
-                        <option value="ARG">🇦🇷 Argentina</option>
-                        <option value="CRI">🇨🇷 Costa Rica</option>
-                    </select>
-                </div>
+                
+                <button onclick="app.login()" class="ab-btn ab-btn-primary" style="margin-top: 40px; width: 100%; padding: 16px;">Iniciar Sesión Segura</button>
+                <p style="text-align: center; margin-top: 32px; font-size: 0.75rem; color: var(--slate-400); font-weight: 600;">© 2026 ADVANCE BIONICS CORPORATE</p>
             </div>
             
-            <button onclick="app.login()" class="ab-btn ab-btn-primary" style="margin-top: 32px; width: 100%;">Entrar al Sistema</button>
+            <!-- Right: Branding -->
+            <div class="login-side-hero desktop-only">
+                <div class="hero-overlay">
+                    <div class="ab-badge success" style="margin-bottom: 12px;">VERSION 13.0</div>
+                    <h2 style="color: white; font-size: 1.5rem; font-weight: 800;">Liderando el futuro de la audición clínica.</h2>
+                </div>
+            </div>
         </div>
     </div>
 
