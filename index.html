@@ -5,115 +5,119 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Advance Bionics | Hub Plus</title>
+    <title>AB Hub Plus | Premium Care</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-    <!-- Login Screen V5 -->
+    <!-- Premium Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- Login Screen V6 (Glassmorphism) -->
     <div id="login-screen" class="overlay active">
-        <div class="login-card">
-            <div class="logo-mark" style="width: 64px; height: 64px; font-size: 1.5rem; margin: 0 auto 24px;">AB</div>
-            <h1>Bienvenido al Hub Plus</h1>
-            <p>Identifícate para sincronizar tu dispositivo y puntos de fidelidad.</p>
+        <div class="login-card glass-card">
+            <div class="logo-mark" style="width: 72px; height: 72px; font-size: 1.8rem; margin: 0 auto 32px;">AB</div>
+            <h1 style="font-size: 2rem; font-weight: 900; letter-spacing: -0.04em;">Advance Bionics</h1>
+            <p style="color: var(--slate-500); margin-top: 8px;">Conexión segura al Centro de Mando Plus.</p>
             
-            <div class="form-group" style="margin-top: 32px; text-align: left;">
-                <label>Tu Nombre</label>
-                <input type="text" id="login-name" placeholder="Ej. Juan Manuel" class="form-input">
+            <div class="form-group" style="margin-top: 40px; text-align: left;">
+                <label style="color: var(--primary); font-weight: 800; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em;">Tu Identidad</label>
+                <input type="text" id="login-name" placeholder="Nombre completo" class="form-input" style="margin-top: 8px;">
             </div>
             
-            <div class="form-group" style="margin-top: 16px; text-align: left;">
-                <label>Modelo de Dispositivo</label>
-                <select id="login-device" class="form-input">
+            <div class="form-group" style="margin-top: 20px; text-align: left;">
+                <label style="color: var(--primary); font-weight: 800; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em;">Hardware Sincronizado</label>
+                <select id="login-device" class="form-input" style="margin-top: 8px; background: white;">
                     <option value="Naída CI M90">Naída CI M90</option>
                     <option value="Sky CI M90">Sky CI M90</option>
                     <option value="Naída CI Q90">Naída CI Q90</option>
                 </select>
             </div>
             
-            <button onclick="app.login()" class="btn-primary" style="margin-top: 32px; width: 100%; padding: 16px;">Iniciar Sesión Segura</button>
-            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 24px;">
-                <i data-lucide="lock" style="width: 12px; height: 12px;"></i> Conexión encriptada con Salesforce Health Cloud
+            <button onclick="app.login()" class="btn-primary" style="margin-top: 40px; width: 100%;">Acceder al Hub Plus</button>
+            <p style="font-size: 0.8rem; color: var(--slate-400); margin-top: 32px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                <i data-lucide="shield-check" style="width: 14px; height: 14px;"></i> Sistema Verificado por Salesforce
             </p>
         </div>
     </div>
 
-    <!-- WhatsApp Bridge Splash Screen -->
-    <div id="bridge-splash" style="display: none;">
-        <div class="bridge-content">
-            <div class="bridge-icons">
-                <i data-lucide="message-circle" class="wa-icon"></i>
-                <div class="bridge-line"></div>
-                <div class="logo-mark">AB</div>
+    <!-- Sequential Overlays (WhatsApp Logic) -->
+    <div id="bridge-splash" class="overlay">
+        <div class="bridge-content glass-card" style="padding: 48px; border-radius: 24px;">
+            <div class="bridge-icons" style="margin-bottom: 32px;">
+                <i data-lucide="message-circle" class="wa-icon" style="width: 64px; height: 64px;"></i>
+                <div class="bridge-line" style="width: 60px;"></div>
+                <div class="logo-mark" style="width: 64px; height: 64px;">AB</div>
             </div>
-            <h2>Sincronizando...</h2>
-            <div class="bridge-loader"></div>
+            <h2 style="font-weight: 900; letter-spacing: -0.02em;">Sincronizando WhatsApp...</h2>
+            <div class="bridge-loader" style="height: 6px; margin-top: 32px;"></div>
         </div>
     </div>
 
-    <!-- Onboarding Overlay -->
     <div id="onboarding-overlay" class="overlay">
-        <div class="onboarding-card">
+        <div class="onboarding-card glass-card">
             <div id="onboarding-step-1" class="onboarding-content">
-                <i data-lucide="award" style="width: 64px; height: 64px; color: var(--warning); margin-bottom: 24px;"></i>
-                <h2>Programa de Fidelidad</h2>
-                <p>Gana puntos por cuidar tu dispositivo y canjéalos por beneficios exclusivos.</p>
-                <button class="btn-primary" style="width: 100%; margin-top: 24px;" onclick="app.finishOnboarding()">¡Empezar a ganar!</button>
+                <div style="background: var(--blue-50); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
+                    <i data-lucide="award" style="width: 40px; height: 40px; color: var(--primary);"></i>
+                </div>
+                <h2 style="font-weight: 900;">Programa de Fidelidad</h2>
+                <p style="color: var(--slate-500); margin-top: 16px;">Gana puntos por cada cuidado técnico. Desbloquea niveles Oro y Platino para beneficios exclusivos.</p>
+                <button class="btn-primary" style="width: 100%; margin-top: 32px;" onclick="app.finishOnboarding()">¡Comenzar Experiencia!</button>
             </div>
         </div>
     </div>
 
     <div class="app-container">
-        <!-- Sidebar Navigation -->
-        <nav class="main-nav desktop-only">
+        <!-- Sidebar Navigation (Glass Design) -->
+        <nav class="main-nav desktop-only glass-card" style="border-radius: 0; box-shadow: none; border: none; border-right: 1px solid var(--border);">
             <div class="logo-container">
                 <div class="logo-mark">AB</div>
                 <span class="logo-text">Hub Plus</span>
             </div>
             
-            <!-- Loyalty Status Widget -->
+            <!-- Global Loyalty Card -->
             <div class="loyalty-widget">
                 <div class="tier-badge" id="sidebar-tier">BRONCE</div>
                 <div class="points-display">
                     <span id="sidebar-points">0</span> <small>PTS</small>
                 </div>
-                <div class="mini-progress"><div id="loyalty-progress-fill" class="fill" style="width: 0%;"></div></div>
+                <div class="mini-progress"><div id="loyalty-progress-fill" class="fill"></div></div>
             </div>
 
             <div class="nav-links">
-                <button class="nav-item" data-view="home"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></button>
+                <button class="nav-item" data-view="home"><i data-lucide="layout-dashboard"></i><span>Entorno</span></button>
                 <button class="nav-item" data-view="benefits"><i data-lucide="award"></i><span>Fidelidad</span></button>
-                <button class="nav-item" data-view="care"><i data-lucide="activity"></i><span>Cuidado</span></button>
+                <button class="nav-item" data-view="care"><i data-lucide="activity"></i><span>Técnico</span></button>
                 <button class="nav-item active" data-view="assistant"><i data-lucide="message-square"></i><span>Melody</span></button>
-                <button class="nav-item" data-view="profile"><i data-lucide="user"></i><span>Mi Perfil</span></button>
+                <button class="nav-item" data-view="profile"><i data-lucide="user"></i><span>Percepción</span></button>
             </div>
             
-            <div class="nav-footer">
-                <button class="nav-item logout-btn" onclick="app.logout()">
-                    <i data-lucide="log-out"></i><span>Cerrar Sesión</span>
+            <div class="nav-footer" style="margin-top: auto;">
+                <button class="nav-item" style="color: var(--danger); border: 1px solid var(--slate-100);" onclick="app.logout()">
+                    <i data-lucide="power"></i><span>Desconectar</span>
                 </button>
             </div>
         </nav>
 
-        <!-- Main Content -->
+        <!-- Main Workspace -->
         <main id="main-content">
-            <header class="mobile-header">
-                <div class="logo-mark">AB</div>
-                <div class="tier-badge" id="mobile-tier">BRONCE</div>
+            <header class="mobile-header glass-card" style="border-radius: 0; border: none; border-bottom: 1px solid var(--border);">
+                <div class="logo-mark" style="width: 32px; height: 32px; font-size: 0.8rem;">AB</div>
+                <div class="tier-badge" id="mobile-tier" style="margin-bottom: 0;">BRONCE</div>
             </header>
-            <!-- Views injected here -->
+            <!-- Content injected here -->
         </main>
 
-        <!-- Bottom Tab Bar (Mobile) -->
-        <nav class="bottom-nav mobile-only">
-            <button class="nav-item" data-view="home"><i data-lucide="layout-dashboard"></i><span>Inicio</span></button>
-            <button class="nav-item" data-view="benefits"><i data-lucide="award"></i><span>Puntos</span></button>
-            <button class="nav-item" data-view="care"><i data-lucide="activity"></i><span>Cuidado</span></button>
-            <button class="nav-item active" data-view="assistant"><i data-lucide="message-square"></i><span>Melody</span></button>
-            <button class="nav-item" data-view="profile"><i data-lucide="user"></i><span>Perfil</span></button>
+        <!-- Bottom Nav (iPhone Style) -->
+        <nav class="bottom-nav mobile-only glass-card" style="border-radius: 0; border: none; border-top: 1px solid var(--border);">
+            <button class="nav-item" data-view="home"><i data-lucide="layout-dashboard"></i></button>
+            <button class="nav-item" data-view="benefits"><i data-lucide="award"></i></button>
+            <button class="nav-item" data-view="care"><i data-lucide="activity"></i></button>
+            <button class="nav-item active" data-view="assistant"><i data-lucide="message-square"></i></button>
+            <button class="nav-item" data-view="profile"><i data-lucide="user"></i></button>
         </nav>
     </div>
 
