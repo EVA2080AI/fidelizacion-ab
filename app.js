@@ -1,6 +1,6 @@
 const app = {
     apiKey: 'AIzaSyCNdm_eWA65yTRVnikOCMuG6-mwHRiwFAc',
-    currentView: 'assistant', // Default to Assistant
+    currentView: 'assistant',
     onboardingStep: 1,
     userName: localStorage.getItem('ab_user_name') || 'Juan Manuel',
     deviceModel: 'Naída CI M90',
@@ -17,7 +17,7 @@ const app = {
         this.checkOnboarding();
         this.renderView('assistant');
         this.startBridge();
-        console.log("AB Care Hub V3 WhatsApp Bridge Initialized");
+        console.log("AB Care Hub V4 Desktop Premium Initialized");
     },
 
     startBridge() {
@@ -26,11 +26,9 @@ const app = {
             splash.style.opacity = '0';
             setTimeout(() => {
                 splash.style.display = 'none';
-                if (this.chatHistory.length === 0) {
-                    this.sendGreeting();
-                }
+                if (this.chatHistory.length === 0) this.sendGreeting();
             }, 600);
-        }, 2000);
+        }, 1500);
     },
 
     sendGreeting() {
@@ -51,9 +49,7 @@ const app = {
 
     checkOnboarding() {
         const completed = localStorage.getItem('ab_onboarding_completed');
-        if (!completed) {
-            document.getElementById('onboarding-overlay').classList.add('visible');
-        }
+        if (!completed) document.getElementById('onboarding-overlay').classList.add('visible');
     },
 
     nextOnboarding(step) {
@@ -77,11 +73,9 @@ const app = {
         document.querySelectorAll('.nav-item').forEach(btn => {
             btn.classList.toggle('active', btn.getAttribute('data-view') === viewId);
         });
-
         const main = document.getElementById('main-content');
         main.innerHTML = '';
         this.renderView(viewId);
-
         this.currentView = viewId;
         window.scrollTo({ top: 0, behavior: 'smooth' });
     },
@@ -107,26 +101,63 @@ const app = {
     },
 
     getAssistantHTML() {
+        const careProgress = Object.values(this.careState).filter(v => v).length * 25;
         return `
             <div class="header-section">
-                <h1>Conversación con Melody</h1>
-                <p>Transferencia segura desde WhatsApp finalizada.</p>
+                <h1>Asistente Melody</h1>
+                <p>Centro de mando y soporte técnico especializado.</p>
             </div>
-            <div class="chat-container">
-                <div id="chat-messages"></div>
-                <div class="chat-input-area">
-                    <button onclick="app.simulateUpload()" class="nav-item" style="padding: 10px; background: #f1f5f9;">
-                        <i data-lucide="image"></i>
-                    </button>
-                    <input type="text" id="ai-input" placeholder="Escribe tu mensaje aquí..." style="flex: 1; padding: 14px; border-radius: 12px; border: 1px solid var(--border); outline: none; font-size: 1rem;">
-                    <button onclick="app.sendMessage()" style="background: var(--primary); color: white; border: none; padding: 14px 28px; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                        Enviar <i data-lucide="send" style="width: 18px; height: 18px;"></i>
-                    </button>
+            
+            <div class="assistant-layout">
+                <!-- Desktop Sidebar -->
+                <div class="assistant-sidebar desktop-only">
+                    <div class="sidebar-card">
+                        <div class="badge-row">
+                            <span class="status-dot"></span>
+                            <small>SISTEMA ONLINE</small>
+                        </div>
+                        <h3>${this.deviceModel}</h3>
+                        <p style="font-size: 0.8rem; color: var(--text-muted);">Sincronizado con Salesforce</p>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h4>Garantía</h4>
+                        <div class="stat-row">
+                            <span class="stat-value">730</span>
+                            <span class="stat-unit">DÍAS</span>
+                        </div>
+                        <div class="mini-progress"><div class="fill" style="width: 85%;"></div></div>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h4>Meta de Cuidado</h4>
+                        <div class="stat-row">
+                            <span class="stat-value">${careProgress}%</span>
+                        </div>
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px;">Checklist de hoy</p>
+                        <div class="mini-progress"><div class="fill" style="width: ${careProgress}%; background: var(--success);"></div></div>
+                    </div>
+                </div>
+
+                <!-- Main Chat -->
+                <div class="chat-container">
+                    <div id="chat-messages"></div>
+                    <div class="chat-input-area">
+                        <button onclick="app.simulateUpload()" class="btn-icon">
+                            <i data-lucide="camera"></i>
+                        </button>
+                        <input type="text" id="ai-input" placeholder="Escribe tu mensaje..." onkeypress="if(event.key==='Enter')app.sendMessage()">
+                        <button onclick="app.sendMessage()" class="btn-send">
+                            <i data-lucide="send"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
-            <div style="display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;">
-                <button class="nav-item" style="border: 1px solid var(--border); background: white; font-size: 0.85rem;" onclick="app.quickQuery('¿Cómo solicito garantía?')">📦 Solicitar Garantía (RMA)</button>
-                <button class="nav-item" style="border: 1px solid var(--border); background: white; font-size: 0.85rem;" onclick="app.quickQuery('no escucho nada')">🔇 No escucho sonidos</button>
+            
+            <div class="quick-queries">
+                <button onclick="app.quickQuery('¿Cómo inicio una garantía?')">📦 Solicitar RMA</button>
+                <button onclick="app.quickQuery('no escucho por el microfono')">🔇 Problema de sonido</button>
+                <button onclick="app.quickQuery('Revisar mis puntos Gold')">🏆 Mis Puntos</button>
             </div>
         `;
     },
@@ -156,8 +187,7 @@ const app = {
             this.chatHistory.push({ role: 'model', parts: [{ text: response }] });
             this.saveHistory();
         } catch (error) {
-            console.error(error);
-            this.addMessageToUI("Lo siento, estoy experimentando dificultades técnicas. Revisa tu conexión.", 'ai');
+            this.addMessageToUI("Lo siento, estoy teniendo problemas de conexión. Por favor reintenta.", 'ai');
         }
     },
 
@@ -165,8 +195,15 @@ const app = {
         const chat = document.getElementById('chat-messages');
         if (!chat) return;
         const msg = document.createElement('div');
-        msg.className = `message ${type}`;
-        msg.innerHTML = `<span>${text}</span>`;
+        msg.className = `message-wrapper ${type}`;
+        
+        const avatar = type === 'ai' ? '<div class="avatar">M</div>' : '';
+        msg.innerHTML = `
+            ${avatar}
+            <div class="message">
+                <span>${text}</span>
+            </div>
+        `;
         chat.appendChild(msg);
         chat.scrollTop = chat.scrollHeight;
     },
@@ -175,38 +212,26 @@ const app = {
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${this.apiKey}`;
         const payload = {
             system_instruction: {
-                parts: [{ text: `Eres Melody, de Advance Bionics. Haz recibido al usuario de WhatsApp.
-                1. RMA/Garantía: Pide fotos y da el link https://forms.kommo.com/rdrvrxx.
-                2. Si no escucha: Check T-Mic y humedad.
-                3. Usa un tono cálido y empático.` }]
+                parts: [{ text: `Eres Melody, Specialist de Advance Bionics. 
+                1. RMA: Pide fotos y da link https://forms.kommo.com/rdrvrxx.
+                2. Fallo sonido: T-Mic check.
+                3. Tono: Profesional, técnico pero empático.` }]
             },
-            contents: this.chatHistory.slice(-10)
+            contents: this.chatHistory.slice(-12)
         };
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
+        const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
         const data = await response.json();
         return data.candidates[0].content.parts[0].text;
     },
 
-    getHomeHTML() {
-        return `
-            <div class="header-section"><h1>Dashboard</h1><p>Bienvenido, Juan.</p></div>
-            <div class="dashboard-grid">
-                <div class="card"><h3>Garantía</h3><div style="font-size: 3rem; font-weight: 800; color: var(--primary);">730</div><p>Días restantes</p></div>
-            </div>
-        `;
-    },
-
+    getHomeHTML() { return `<div class="card"><h1>Dashboard</h1><p>Visualiza tu estado auditivo.</p></div>`; },
+    getBenefitsHTML() { return `<div class="card"><h1>Beneficios</h1><p>Nivel Gold activo.</p></div>`; },
+    getCareHTML() { return `<div class="card"><h1>Cuidado</h1><p>Checklist persistente.</p></div>`; },
+    getProfileHTML() { return `<div class="card"><h1>Perfil</h1><p>Sincronizado.</p></div>`; },
     saveHistory() { localStorage.setItem('ab_chat_history', JSON.stringify(this.chatHistory.slice(-15))); },
     clearChat() { this.chatHistory = []; this.saveHistory(); this.switchView('assistant'); },
-    simulateUpload() { this.addMessageToUI("[Simulado] Foto subida exitosamente.", 'ai'); },
-    quickQuery(text) { const i = document.getElementById('ai-input'); if(i){ i.value=text; this.sendMessage(); } },
-    getBenefitsHTML() { return `<div class="card"><h1>Beneficios</h1><p>Nivel Gold activo.</p></div>`; },
-    getCareHTML() { return `<div class="card"><h1>Cuidado Técnico</h1><p>Sigue tu checklist.</p></div>`; },
-    getProfileHTML() { return `<div class="card"><h1>Perfil</h1><p>Sincronizado con Salesforce.</p></div>`; }
+    simulateUpload() { this.addMessageToUI("[Simulado] Imagen enviada correctamente.", 'ai'); },
+    quickQuery(text) { const i = document.getElementById('ai-input'); if(i){i.value=text; this.sendMessage();} }
 };
 
 document.addEventListener('DOMContentLoaded', () => { app.init(); window.app = app; });
