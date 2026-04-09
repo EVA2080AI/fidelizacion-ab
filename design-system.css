@@ -1,61 +1,81 @@
-/* Advance Bionics Official Design System V16 - Full UI Kit */
+/* 🏛️ V21: Marvel Core Ultra-Premium Design System */
 :root {
-    /* Brand DNA */
-    --primary: #00A3DA;
-    --primary-alt: #0084B1;
-    --secondary: #333333;
-    --bg-light: #F1F1F1;
-    --white: #FFFFFF;
+    /* Brand DNA - Official AB Teal Enhanced */
+    --primary-h: 195;
+    --primary-s: 100%;
+    --primary-l: 43%; /* Exact #00A3DA */
     
-    /* State Tokens */
+    --primary: hsl(var(--primary-h), var(--primary-s), var(--primary-l));
+    --primary-light: hsl(var(--primary-h), var(--primary-s), 95%);
+    --primary-soft: hsl(var(--primary-h), var(--primary-s), 90%);
+    --primary-deep: hsl(var(--primary-h), var(--primary-s), 30%);
+    
+    /* Neutrals - Surgical Aesthetic */
+    --slate-50: #f8fafc;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-400: #94a3b8;
+    --slate-600: #475569;
+    --slate-800: #1e293b;
+    --slate-900: #0f172a;
+    
+    /* Semantic Colors */
     --success: #10b981;
-    --success-bg: rgba(16, 185, 129, 0.1);
     --warning: #f59e0b;
-    --warning-bg: rgba(245, 158, 11, 0.1);
     --danger: #ef4444;
-    --danger-bg: rgba(239, 68, 68, 0.1);
-    --focus-ring: rgba(0, 163, 218, 0.35);
     
-    /* UI Geometry */
-    --radius-sm: 4px;
-    --radius-md: 8px;
-    --radius-lg: 12px;
-    --transition-smooth: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    --shadow-premium: 0 4px 20px -5px rgba(0, 0, 0, 0.1);
-    --shadow-hover: 0 10px 40px -10px rgba(0, 0, 0, 0.15);
+    /* Typography */
+    --font-main: 'Inter', system-ui, sans-serif;
+    --font-display: 'Outfit', sans-serif;
+    
+    /* Glassmorphism 2.0 & Depth */
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(0, 0, 0, 0.04);
+    --glass-blur: 24px;
+    
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 24px;
+    
+    /* Elevation System */
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.02);
+    --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+    --shadow-premium: 0 30px 60px -12px rgba(15, 23, 42, 0.12);
+    
+    /* Motion */
+    --spring: cubic-bezier(0.16, 1, 0.3, 1);
+    --duration-base: 0.4s;
+    --transition-smooth: all var(--duration-base) var(--spring);
 }
 
-/* Base Reset */
-* { 
-    margin: 0; padding: 0; box-sizing: border-box; 
-    font-family: 'Inter', -apple-system, sans-serif;
-    -webkit-tap-highlight-color: transparent; 
+/* Base Style */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-main); }
+body { background: var(--slate-50); color: var(--slate-900); -webkit-font-smoothing: antialiased; }
+
+h1, h2, h3, h4, .text-caps { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em; }
+.text-caps { text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.7rem; color: var(--slate-400); }
+
+/* Cinematic Backdrop Utility */
+.glass-effect {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
 }
 
-html, body {
-    min-height: 100dvh; background: var(--bg-light); color: var(--secondary);
-    line-height: 1.6; -webkit-font-smoothing: antialiased;
+/* Page Shimmer Transitions */
+@keyframes shimmerPulse { 0% { opacity: 0.4; } 50% { opacity: 0.8; } 100% { opacity: 0.4; } }
+.shimmer { animation: shimmerPulse 2s infinite ease-in-out; }
+
+/* Global Motion Logic */
+.view-enter { animation: viewFadeIn 0.5s var(--spring); }
+@keyframes viewFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* Form Interaction tokens */
-.shimmer {
-    background: linear-gradient(90deg, #f0f0f0 25%, #f8f8f8 50%, #f0f0f0 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-}
-
-@keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
-}
-
-@keyframes toastSlide {
-    from { transform: translateX(120%) scale(0.9); opacity: 0; }
-    to { transform: translateX(0) scale(1); opacity: 1; }
-}
-
-@keyframes pulseBorder {
-    0% { box-shadow: 0 0 0 0 var(--focus-ring); }
-    70% { box-shadow: 0 0 0 8px rgba(0, 163, 218, 0); }
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 0 0 rgba(0, 163, 218, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(0, 163, 218, 0); }
     100% { box-shadow: 0 0 0 0 rgba(0, 163, 218, 0); }
 }
