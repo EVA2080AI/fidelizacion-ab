@@ -165,3 +165,31 @@ main { flex: 1; padding: 64px 80px; max-width: 1500px; margin: 0 auto; width: 10
     font-weight: 800; box-shadow: 0 4px 12px rgba(0,102,178,0.2); transition: var(--transition-smooth);
 }
 .btn-primary:hover { background: var(--primary-dark); transform: scale(1.02); }
+
+/* --- Status Tags & Expert UI V7 --- */
+.status-tag {
+    padding: 6px 14px; border-radius: 99px; font-size: 0.7rem; font-weight: 800;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    display: inline-flex; align-items: center; justify-content: center;
+}
+.status-tag.success { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+.status-tag.caution { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+.status-tag.danger { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+.checklist-item {
+    transition: var(--transition-smooth); border: 2px solid transparent; cursor: pointer;
+}
+.checklist-item:hover { border-color: var(--primary-light); transform: scale(1.01); }
+.checklist-item.completed { border-color: var(--success); background: #f0fdf4; cursor: default; }
+.checklist-item.completed b { color: var(--success); }
+
+.badge-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.status-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; box-shadow: 0 0 0 4px #d1fae5; }
+
+/* Custom Animations for Toasts V7 */
+.toast.error { background: var(--slate-900); border-left: 4px solid var(--danger); }
+.toast.success { background: var(--slate-900); border-left: 4px solid var(--success); }
+
+@media (max-width: 768px) {
+    .dashboard-grid { grid-template-columns: 1fr !important; }
+}
