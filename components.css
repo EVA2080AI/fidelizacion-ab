@@ -1,65 +1,61 @@
-/* AB UI Component Library V8 */
+/* AB Enterprise Components V11 */
 
-/* Standardized Card */
-.ab-card {
-    background: white;
-    border-radius: var(--radius-md);
-    padding: 24px;
-    border: 1px solid var(--slate-200);
-    transition: var(--transition-smooth);
+/* Global Data Table */
+.ab-table-container { 
+    width: 100%; overflow-x: auto; 
+    border-radius: 16px; border: 1px solid var(--slate-200); 
+    background: white; margin-top: 24px;
 }
-.ab-card:active { animation: hapticPulse 0.2s ease-out; }
+.ab-table { 
+    width: 100%; border-collapse: collapse; text-align: left; 
+}
+.ab-table th { 
+    background: var(--slate-50); padding: 16px 20px; 
+    font-size: 0.75rem; font-weight: 800; color: var(--slate-500);
+    text-transform: uppercase; border-bottom: 1px solid var(--slate-200);
+}
+.ab-table td { 
+    padding: 18px 20px; font-size: 0.9rem; border-bottom: 1px solid var(--slate-50); 
+}
+.ab-table tr:hover { background: var(--blue-50); }
 
-/* Buttons & Haptics */
-.ab-btn {
-    display: inline-flex;
-    align-items: center; justify-content: center;
-    padding: 14px 28px;
-    border-radius: 14px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: var(--transition-smooth);
+/* Tracker Component (Warranties) */
+.ab-tracker {
+    display: flex; justify-content: space-between; position: relative;
+    padding: 40px 0; margin-top: 20px;
 }
-.ab-btn-primary { 
-    background: var(--primary); color: white; 
-    box-shadow: 0 4px 15px rgba(0, 102, 178, 0.2); 
+.ab-tracker::before {
+    content:''; position:absolute; top:52px; left:0; right:0; height:4px; 
+    background:var(--slate-200); z-index:1;
 }
-.ab-btn:active { transform: scale(0.96); }
+.tracker-step { 
+    position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 12px;
+    width: 80px;
+}
+.step-dot { 
+    width: 24px; height: 24px; border-radius: 50%; background: white; 
+    border: 4px solid var(--slate-200); transition: all 0.4s;
+}
+.tracker-step.active .step-dot { border-color: var(--primary); transform: scale(1.2); }
+.tracker-step.completed .step-dot { background: var(--primary); border-color: var(--primary); }
+.step-label { font-size: 0.65rem; font-weight: 800; color: var(--slate-500); text-align: center; }
 
-/* Inputs */
-.ab-input {
-    width: 100%;
-    padding: 16px;
-    border-radius: 12px;
-    border: 2px solid var(--slate-200);
-    background: white;
-    transition: border-color 0.2s;
+/* Status Badges */
+.status-pill {
+    padding: 6px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 800;
 }
-.ab-input:focus { border-color: var(--primary); }
+.status-pill.pending { background: #fef3c7; color: #92400e; }
+.status-pill.approved { background: #d1fae5; color: #065f46; }
+.status-pill.active { background: #dbeafe; color: #1e40af; }
 
-/* Badges & Status */
-.ab-badge {
-    padding: 6px 14px; border-radius: 99px; 
-    font-size: 0.7rem; font-weight: 800;
-    text-transform: uppercase;
-}
-.ab-badge.success { background: #d1fae5; color: #065f46; }
-.ab-badge.caution { background: #fef3c7; color: #92400e; }
-
-/* Toast Engine Styles */
-.ab-toast {
-    background: var(--slate-900); color: white; 
-    padding: 16px 24px; border-radius: 14px;
-    display: flex; align-items: center; gap: 12px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-    margin-bottom: 8px;
+/* Standby Overlay */
+.standby-overlay {
+    text-align: center; padding: 60px 40px;
 }
 
-/* Checklist V8 */
-.checklist-item {
-    background: white; padding: 20px; border-radius: 16px; 
-    border: 2px solid transparent; cursor: pointer;
-    transition: var(--transition-smooth);
+/* Dashboard Cards V11 */
+.stat-card {
+    padding: 24px; border-radius: 20px; background: white; border: 1px solid var(--slate-100);
 }
-.checklist-item:active { transform: scale(0.98); }
-.checklist-item.completed { border-color: var(--success); background: #f0fdf4; }
+.stat-card h2 { font-size: 2.5rem; font-weight: 900; color: var(--primary); margin: 8px 0; }
+.stat-card p { font-size: 0.85rem; color: var(--slate-500); }
