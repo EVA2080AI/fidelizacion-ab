@@ -1,5 +1,5 @@
 const app = {
-    apiKey: 'AIzaSyAMDSqSymAmIHDrvwZFG767dwOHvTpV_o4',
+    apiKey: 'AIzaSyCNdm_eWA65yTRVnikOCMuG6-mwHRiwFAc',
     currentView: 'home',
     onboardingStep: 1,
     userName: localStorage.getItem('ab_user_name') || 'Juan Manuel',
