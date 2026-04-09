@@ -5,11 +5,17 @@ const app = {
     userName: localStorage.getItem('ab_user_name') || 'Juan Manuel',
     deviceModel: 'Naída CI M90',
     chatHistory: JSON.parse(localStorage.getItem('ab_chat_history')) || [],
+    careState: JSON.parse(localStorage.getItem('ab_care_state')) || {
+        tmic: false,
+        cable: false,
+        dryer: false,
+        battery: false
+    },
 
     init() {
         this.bindEvents();
         this.checkOnboarding();
-        console.log("AB Care Hub V2.1 Initialized");
+        console.log("AB Care Hub V2.2 iPhone Optimized Initialized");
     },
 
     bindEvents() {
@@ -98,24 +104,87 @@ const app = {
                     </div>
                 </div>
                 <div style="padding: 20px; border-top: 1px solid var(--border); display: flex; gap: 12px; align-items: center;">
-                    <button onclick="app.simulateUpload()" class="btn-icon" title="Subir foto del dispositivo">
+                    <button onclick="app.simulateUpload()" class="btn-icon">
                         <i data-lucide="image"></i>
                     </button>
-                    <input type="text" id="ai-input" placeholder="Escribe tu consulta o describe el daño..." style="flex: 1; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border); outline: none;">
-                    <button onclick="app.sendMessage()" style="background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer;">Enviar</button>
+                    <input type="text" id="ai-input" placeholder="Escribe tu consulta..." style="flex: 1; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border); outline: none;">
+                    <button onclick="app.sendMessage()" style="background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600;">Enviar</button>
                 </div>
             </div>
-            <div style="display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap;">
-                <button class="nav-item-btn" onclick="app.quickQuery('no escucho por el microfono')">No escucho por el micrófono</button>
-                <button class="nav-item-btn" onclick="app.quickQuery('¿Cómo solicito garantía?')">¿Cómo solicito garantía?</button>
-                <button class="nav-item-btn" onclick="app.quickQuery('Mis puntos del nivel Gold')">Mis beneficios Gold</button>
+        `;
+    },
+
+    getCareHTML() {
+        const progress = this.updateCareProgress();
+        return `
+            <div class="header-section">
+                <h1>Cuidado del Dispositivo</h1>
+                <p>Responsabilidad diaria para una audición excelente.</p>
+            </div>
+            
+            <div class="card care-progress-card" style="margin-bottom: 24px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <h3>Progreso de Hoy</h3>
+                    <span id="progress-percent" style="font-weight: 800; font-size: 1.2rem;">${progress}%</span>
+                </div>
+                <div class="progress-bar-container" style="background: rgba(255,255,255,0.1); height: 12px;">
+                    <div id="care-bar" class="progress-bar" style="width: ${progress}%; background: #10b981;"></div>
+                </div>
+            </div>
+
+            <div class="checklist-container">
+                ${this.renderCheckItem('tmic', 'Limpiar filtros T-Mic™', 'Garantiza que los micrófonos estén libres de cerumen.')}
+                ${this.renderCheckItem('cable', 'Revisar cable y bobina', 'Busca signos de desgaste o rotura.')}
+                ${this.renderCheckItem('dryer', 'Deshumidificador nocturno', 'Elimina la humedad acumulada durante el día.')}
+                ${this.renderCheckItem('battery', 'Verificar carga de batería', 'Asegúrate de tener energía para todo el día.')}
             </div>
         `;
+    },
+
+    renderCheckItem(id, title, desc) {
+        const completed = this.careState[id] ? 'completed' : '';
+        return `
+            <div class="checklist-item ${completed}" onclick="app.toggleCareTask('${id}')">
+                <div class="check-circle">
+                    <i data-lucide="check" style="width: 14px; height: 14px;"></i>
+                </div>
+                <div>
+                    <label>${title}</label>
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">${desc}</p>
+                </div>
+            </div>
+        `;
+    },
+
+    toggleCareTask(taskId) {
+        this.careState[taskId] = !this.careState[taskId];
+        localStorage.setItem('ab_care_state', JSON.stringify(this.careState));
+        
+        const progress = this.updateCareProgress();
+        this.switchView('care'); // Refresh view
+        
+        if (progress === 100) {
+            this.congratulateUser();
+        }
+    },
+
+    updateCareProgress() {
+        const total = Object.keys(this.careState).length;
+        const done = Object.values(this.careState).filter(v => v).length;
+        return Math.round((done / total) * 100);
+    },
+
+    congratulateUser() {
+        const msg = "¡Felicidades Juan Manuel! Has completado todo el mantenimiento preventivo de hoy. Tu Naída CI M90 te lo agradecerá.";
+        this.chatHistory.push({ role: 'model', parts: [{ text: msg }] });
+        this.saveHistory();
+        alert(msg);
     },
 
     renderHistory() {
         const chat = document.getElementById('chat-messages');
         if (!chat) return;
+        chat.innerHTML = '';
         this.chatHistory.forEach(msg => {
             this.addMessageToUI(msg.parts[0].text, msg.role === 'user' ? 'user' : 'ai');
         });
@@ -137,8 +206,7 @@ const app = {
             this.chatHistory.push({ role: 'model', parts: [{ text: response }] });
             this.saveHistory();
         } catch (error) {
-            console.error(error);
-            this.addMessageToUI("Lo siento, estoy experimentando dificultades técnicas. Por favor, intenta de nuevo en un momento.", 'ai');
+            this.addMessageToUI("Lo siento, estoy experimentando dificultades técnicas.", 'ai');
         }
     },
 
@@ -154,91 +222,31 @@ const app = {
 
     async callGemini() {
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${this.apiKey}`;
-        
-        const systemPrompt = `Eres Melody, Specialist Assistant de Advance Bionics. 
-        REGLAS DE NEGOCIO (KNOWLEDGE BASE):
-        1. RMA/Garantía: Si el usuario reporta daño, falta de sonido o mal funcionamiento, es URGENTE.
-           - DEBES pedir fotos del dispositivo y componentes (cable, bobina, micro).
-           - Menciona el link seguro de formulario RMA: https://forms.kommo.com/rdrvrxx.
-           - Informa que se generará un número de caso con formato "VAL-XXXX" en el CRM de la clínica.
-        2. T-Mic™: Si mencionan no escuchar, sugiere revisar protectores del micrófono T-Mic.
-        3. Identidad: Eres Melody. Saluda a Juan Manuel al inicio (ya lo hiciste, mantén el tono).
-        4. Contexto: Juan Manuel tiene un Naída CI M90 y nivel Gold.
-        5. Memoria: Responde basándote en la historia que recibes. No olvides lo que el usuario dijo antes.
-        6. Empatía: Usa un lenguaje profesional pero cálido ("Entiendo lo frustrante que puede ser...").`;
-
-        const contents = [
-            { role: 'user', parts: [{ text: `INSTRUCCIÓN DE SISTEMA: ${systemPrompt}` }] },
-            ...this.chatHistory
-        ];
-
+        const payload = {
+            system_instruction: {
+                parts: [{ text: `Eres Melody, Specialist Assistant de Advance Bionics. 
+                1. RMA/Garantía: Pide fotos y menciona el link https://forms.kommo.com/rdrvrxx.
+                2. T-Mic™: Sugiere revisar filtros.
+                3. Juan Manuel tiene un Naída CI M90.
+                4. Usa el historial para ser coherente.` }]
+            },
+            contents: this.chatHistory.slice(-10)
+        };
         const response = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents })
+            body: JSON.stringify(payload)
         });
-
         const data = await response.json();
-        if (data.error) throw new Error(data.error.message);
         return data.candidates[0].content.parts[0].text;
     },
 
-    saveHistory() {
-        localStorage.setItem('ab_chat_history', JSON.stringify(this.chatHistory.slice(-20)));
-    },
+    saveHistory() { localStorage.setItem('ab_chat_history', JSON.stringify(this.chatHistory.slice(-20))); },
+    clearChat() { this.chatHistory = []; this.saveHistory(); this.switchView('assistant'); },
+    simulateUpload() { /* ... */ },
 
-    clearChat() {
-        this.chatHistory = [];
-        this.saveHistory();
-        this.switchView('assistant');
-    },
-
-    simulateUpload() {
-        this.addMessageToUI("[Simulación] Subiendo 2 fotos del procesador Naída CI M90...", 'user');
-        setTimeout(() => {
-            this.addMessageToUI("He recibido tus fotos, Juan Manuel. Las estoy adjuntando a tu expediente en Salesforce para que el equipo técnico las revise de inmediato. ¿Alguna otra parte del dispositivo que quieras mostrar?", 'ai');
-        }, 1500);
-    },
-
-    quickQuery(text) {
-        const input = document.getElementById('ai-input');
-        if (input) {
-            input.value = text;
-            this.sendMessage();
-        }
-    },
-
-    getBenefitsHTML: function() { /* snippet... */ return `
-        <div class="header-section">
-            <h1>Tus Beneficios</h1>
-            <p>Nivel Gold: Ventajas exclusivas.</p>
-        </div>
-        <div class="dashboard-grid">
-            <div class="card" style="grid-column: span 2; background: linear-gradient(135deg, #0066b2, #0ea5e9); color: white;">
-                <h3>Puntos Gold</h3>
-                <div style="font-size: 3rem; font-weight: 800; margin: 16px 0;">750 <small style="font-size: 1rem; opacity: 0.8;">PTS</small></div>
-                <div class="progress-bar-container" style="background: rgba(255,255,255,0.2);">
-                    <div class="progress-bar" style="width: 75%; background: white;"></div>
-                </div>
-            </div>
-            <div class="card">
-                <i data-lucide="award"></i><h4>Garantía +12 meses</h4>
-            </div>
-            <div class="card">
-                <i data-lucide="package"></i><h4>Kit de Limpieza Pro</h4>
-            </div>
-        </div>
-    `},
-
-    getCareHTML: function() { return `
-        <div class="header-section"><h1>Cuidado Diario</h1><p>Mantenimiento preventivo.</p></div>
-        <div class="card"><h3>Checklist</h3><p>• Limpiar cable • Verificar bobina • Deshumidificar</p></div>
-    `},
-
-    getProfileHTML: function() { return `
-        <div class="header-section"><h1>Mi Perfil</h1><p>Datos sincronizados.</p></div>
-        <div class="card"><p>Usuario: Juan Manuel</p><p>Dispositivo: Naída CI M90</p></div>
-    `}
+    getBenefitsHTML() { return `<div class="card"><h3>Premios Gold</h3><p>Puntos: 750</p></div>`; },
+    getProfileHTML() { return `<div class="card"><h3>Perfil</h3><p>Juan Manuel</p></div>`; }
 };
 
 document.addEventListener('DOMContentLoaded', () => { app.init(); window.app = app; });

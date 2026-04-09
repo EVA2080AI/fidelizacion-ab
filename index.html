@@ -2,7 +2,9 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Advance Bionics | Hub de Cuidado</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,7 +43,8 @@
     </div>
 
     <div class="app-container">
-        <nav class="main-nav">
+        <!-- Sidebar Navigation (Desktop) -->
+        <nav class="main-nav desktop-only">
             <div class="logo-container">
                 <div class="logo-mark">AB</div>
                 <span class="logo-text">Advance Bionics</span>
@@ -80,7 +83,13 @@
             </div>
         </nav>
 
+        <!-- Main Content Core -->
         <main id="main-content">
+            <header class="mobile-header">
+                <div class="logo-mark">AB</div>
+                <span class="logo-text">Advance Bionics</span>
+            </header>
+
             <section id="view-home" class="view active">
                 <div class="header-section">
                     <h1>Hola de nuevo, Juan</h1>
@@ -104,7 +113,7 @@
                     </div>
 
                     <div class="card">
-                        <h3>Nivel de Fidelidad</h3>
+                        <h3>Próxima Meta</h3>
                         <div style="display: flex; align-items: center; gap: 20px;">
                             <div style="background: #fef3c7; color: #d97706; padding: 16px; border-radius: 12px;">
                                 <i data-lucide="medal" style="width: 32px; height: 32px;"></i>
@@ -114,35 +123,37 @@
                                 <p style="color: var(--text-muted); font-size: 0.9rem;">250 pts para Platinum</p>
                             </div>
                         </div>
-                        <button class="nav-item" style="margin-top: 24px; padding: 8px 0; color: var(--primary);" onclick="app.switchView('benefits')">Ver escala de beneficios →</button>
-                    </div>
-
-                    <div class="card">
-                        <h3>Estado del Dispositivo</h3>
-                        <div style="display: flex; flex-direction: column; gap: 16px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span style="font-size: 0.95rem;">Procesador Naída CI M90</span>
-                                <span style="background: #ecfdf5; color: #059669; padding: 4px 12px; border-radius: 99px; font-size: 0.75rem; font-weight: 600;">ACTIVO</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span style="font-size: 0.95rem;">Batería</span>
-                                <span style="font-weight: 600;">88%</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-                        <i data-lucide="help-circle" style="width: 32px; height: 32px; color: var(--primary); margin-bottom: 12px;"></i>
-                        <h3>¿Necesitas ayuda?</h3>
-                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Consulta a nuestra IA especializada.</p>
-                        <button class="btn" style="background: var(--primary); color: white; padding: 10px 24px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;" onclick="app.switchView('assistant')">Hablar con IA</button>
                     </div>
                 </div>
             </section>
         </main>
+
+        <!-- Bottom Tab Bar (Mobile) -->
+        <nav class="bottom-nav mobile-only">
+            <button class="nav-item active" data-view="home">
+                <i data-lucide="layout-dashboard"></i>
+                <span>Inicio</span>
+            </button>
+            <button class="nav-item" data-view="benefits">
+                <i data-lucide="award"></i>
+                <span>Premios</span>
+            </button>
+            <button class="nav-item" data-view="care">
+                <i data-lucide="activity"></i>
+                <span>Cuidado</span>
+            </button>
+            <button class="nav-item" data-view="assistant">
+                <i data-lucide="message-square"></i>
+                <span>Melody</span>
+            </button>
+            <button class="nav-item" data-view="profile">
+                <i data-lucide="user"></i>
+                <span>Perfil</span>
+            </button>
+        </nav>
     </div>
 
-    <div class="ai-fab" id="ai-fab" onclick="app.switchView('assistant')">
+    <div class="ai-fab desktop-only" id="ai-fab" onclick="app.switchView('assistant')">
         <i data-lucide="message-circle"></i>
     </div>
 
