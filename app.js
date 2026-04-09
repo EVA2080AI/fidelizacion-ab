@@ -3,7 +3,6 @@ const app = {
     currentUser: JSON.parse(localStorage.getItem('ab_enterprise_user')) || null,
     chatHistory: JSON.parse(localStorage.getItem('ab_chat_history_v11')) || [],
     
-    // Global Storage Sim (In reality this comes from Backend)
     pendingApprovals: [
         { id: 101, name: 'Dra. Elena Soler', role: 'ESPECIALISTA', country: 'MEX', email: 'elena@clinic.mx' },
         { id: 102, name: 'Equipos Médicos S.A.', role: 'DISTRIBUIDOR', country: 'ARG', email: 'ventas@emsa.ar' }
@@ -17,19 +16,16 @@ const app = {
         this.bindEvents();
         this.checkAuth();
         this.registerSW();
-        console.log("AB Enterprise Command Center V11 Online");
+        console.log("AB Intelligence Center V12 Online");
     },
 
-    registerSW() {
-        if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
-    },
+    registerSW() { if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {}); },
 
     bindEvents() {
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => {
                 const view = item.getAttribute('data-view');
-                if (view === 'chat' && window.innerWidth < 768) { this.toggleMobileChat(); }
-                else if (view) this.switchView(view);
+                if (view) this.switchView(view);
             });
         });
     },
@@ -37,16 +33,8 @@ const app = {
     checkAuth() {
         const loginScreen = document.getElementById('login-screen');
         const appShell = document.querySelector('.app-shell');
-        if (!this.currentUser) {
-            loginScreen.classList.add('active');
-            appShell.style.display = 'none';
-        } else {
-            loginScreen.classList.remove('active');
-            appShell.style.display = 'flex';
-            this.setupHeader();
-            this.switchView('home');
-            this.renderHistorySidebar();
-        }
+        if (!this.currentUser) { loginScreen.classList.add('active'); appShell.style.display = 'none'; } 
+        else { loginScreen.classList.remove('active'); appShell.style.display = 'flex'; this.setupHeader(); this.switchView('home'); this.renderHistorySidebar(); }
     },
 
     login() {
@@ -54,11 +42,9 @@ const app = {
         const role = document.getElementById('login-role').value;
         const country = document.getElementById('login-country').value;
         if (!name) { this.toast("Nombre requerido", "error"); return; }
-        
         this.currentUser = { name, role, country, id: 'USR-' + Math.floor(Math.random()*1000) };
         localStorage.setItem('ab_enterprise_user', JSON.stringify(this.currentUser));
         this.checkAuth();
-        this.toast(`Bienvenido ${name} (${role})`, "success");
     },
 
     logout() { localStorage.clear(); location.reload(); },
@@ -92,11 +78,12 @@ const app = {
         section.id = `view-${viewId}`;
         section.className = 'view active';
         
-        // Dynamic Content Selection per Role
-        if (viewId === 'home') section.innerHTML = this.getHomeHTML();
-        else if (viewId === 'store') section.innerHTML = this.getStoreHTML();
-        else if (viewId === 'profile') section.innerHTML = this.getProfileHTML();
-        else if (viewId === 'tools') section.innerHTML = this.getToolsHTML();
+        switch(viewId) {
+            case 'home': section.innerHTML = this.getHomeHTML(); setTimeout(() => this.renderCharts(), 50); break;
+            case 'store': section.innerHTML = this.getStoreHTML(); break;
+            case 'profile': section.innerHTML = this.getProfileHTML(); break;
+            case 'tools': section.innerHTML = this.getToolsHTML(); break;
+        }
         
         main.appendChild(section);
         if (window.lucide) lucide.createIcons();
@@ -104,13 +91,16 @@ const app = {
 
     getHomeHTML() {
         const role = this.currentUser.role;
-        let content = `<div style="margin-bottom:32px;"><h1>Panel de Gestión</h1><p style="color:var(--slate-500);">Alcance de usuario: ${this.currentUser.country}</p></div>`;
+        let content = `<div style="margin-bottom:32px;"><h1>Intelligence Dashboard</h1><p style="color:var(--slate-500);">Análisis avanzado de datos AB (${this.currentUser.country})</p></div>`;
         
         if (role === 'ADMIN') {
             content += `
-                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:24px;">
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:24px; margin-bottom:32px;">
                     <div class="stat-card"><h2>${this.pendingApprovals.length}</h2><p>Solicitudes Pendientes</p></div>
-                    <div class="stat-card"><h2>842</h2><p>Pacientes Globales</p></div>
+                    <div class="ab-card shadow-premium" style="grid-column: span 2; min-height:300px;">
+                        <h4>Tendencia de Registros Galobales</h4>
+                        <canvas id="adminChart"></canvas>
+                    </div>
                 </div>
                 <div class="ab-table-container">
                     <table class="ab-table">
@@ -124,47 +114,75 @@ const app = {
         } else if (role === 'DISTRIBUIDOR') {
             content += `
                 <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:24px;">
-                    <div class="stat-card"><h2>12</h2><p>Garantías en Curso</p></div>
-                    <button class="ab-btn ab-btn-primary" onclick="app.toast('Formulario de Garantía Abierto')">+ Nueva Garantía</button>
-                </div>
-                <h3 style="margin: 32px 0 16px;">Tracking de Solicitudes</h3>
-                ${this.warrantyTickets.map(t => `
-                    <div class="ab-card shadow-premium" style="margin-bottom:20px;">
-                        <div style="display:flex; justify-content:space-between; align-items:center;"><b>Ticket ${t.id}</b> <span class="status-pill active">${t.status}</span></div>
-                        <div class="ab-tracker">
-                            <div class="tracker-step completed"><div class="step-dot"></div><span class="step-label">RECIBIDO</span></div>
-                            <div class="tracker-step ${t.status==='EVALUACION'?'active':''} completed"><div class="step-dot"></div><span class="step-label">EVALUACION</span></div>
-                            <div class="tracker-step"><div class="step-dot"></div><span class="step-label">APROBADO</span></div>
-                            <div class="tracker-step"><div class="step-dot"></div><span class="step-label">ENVIADO</span></div>
-                        </div>
+                    <div class="ab-card shadow-premium" style="grid-column: span 2; min-height:300px;">
+                        <h4>Rendimiento Comercial Mensual</h4>
+                        <canvas id="distributorChart"></canvas>
                     </div>
-                `).join('')}
+                    <div class="stat-card"><h2>12</h2><p>Tickets de Garantía</p></div>
+                </div>
+                <h3 style="margin: 32px 0 16px;">Tracking Visual</h3>
+                ${this.warrantyTickets.map(t => `<div class="ab-card shadow-premium" style="margin-bottom:20px;"><b>Ticket ${t.id}</b><span class="status-pill active" style="float:right;">${t.status}</span></div>`).join('')}
             `;
         } else if (role === 'ESPECIALISTA') {
             content += `
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px;">
-                    <div class="ab-card"><h4>Pacientes Asignados</h4><h2>48</h2></div>
-                    <div class="ab-card"><h4>Revisiones Pendientes</h4><h2>5</h2></div>
-                </div>
-                <div class="ab-table-container">
-                    <table class="ab-table">
-                        <thead><tr><th>Paciente</th><th>Implante</th><th>Mapeo</th><th>Clínica</th></tr></thead>
-                        <tbody>
-                            <tr><td><b>Luisa Ortega</b></td><td>Marvel CI</td><td>Mar 2026</td><td>Sede Norte</td></tr>
-                            <tr><td><b>Pedro Castillo</b></td><td>Sky CI</td><td>Ene 2026</td><td>Sede Clínica Central</td></tr>
-                        </tbody>
-                    </table>
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap:24px;">
+                    <div class="ab-card shadow-premium" style="min-height:350px;">
+                        <h4>Salud de Electrodos (Promedio)</h4>
+                        <canvas id="specChart"></canvas>
+                    </div>
+                    <div class="ab-card shadow-premium" style="min-height:350px;">
+                        <h4>Historial Clínico del Mes</h4>
+                        <div class="ab-table-container" style="border:none; margin-top:0;">
+                            <table class="ab-table">
+                                <thead><tr><th>Paciente</th><th>Evento</th></tr></thead>
+                                <tbody>
+                                    <tr><td><b>L. Ortega</b></td><td>Revisión Anual</td></tr>
+                                    <tr><td><b>P. Castillo</b></td><td>Mapeo</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             `;
         } else {
-            content += `<div class="ab-card"><h4>Mis Puntos Plus</h4><h2>${localStorage.getItem('ab_user_points') || 0}</h2><p>Nivel ${this.currentUser.role}</p></div>`;
+            content += `
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px;">
+                    <div class="ab-card shadow-premium"><h4>Mis Puntos Plus</h4><h2>850</h2><canvas id="patientChart"></canvas></div>
+                    <div class="stat-card"><h2>92%</h2><p>Calidad de Cuidado</p></div>
+                </div>
+            `;
         }
         return content;
     },
 
+    renderCharts() {
+        const role = this.currentUser.role;
+        const ctxStyle = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } };
+
+        if (role === 'ADMIN') {
+            new Chart(document.getElementById('adminChart'), {
+                type: 'line',
+                data: { labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May'], datasets: [{ label: 'Registros', data: [120, 250, 480, 842, 1020], borderColor: '#0066b2', tension: 0.4 }] },
+                options: ctxStyle
+            });
+        } else if (role === 'DISTRIBUIDOR') {
+            new Chart(document.getElementById('distributorChart'), {
+                type: 'bar',
+                data: { labels: ['Q1', 'Q2', 'Q3', 'Q4'], datasets: [{ label: 'Ventas', data: [45, 82, 63, 110], backgroundColor: '#0066b2', borderRadius: 10 }] },
+                options: ctxStyle
+            });
+        } else if (role === 'ESPECIALISTA') {
+            new Chart(document.getElementById('specChart'), {
+                type: 'radar',
+                data: { labels: ['Bajos', 'Medios', 'Altos', 'Rango 1', 'Rango 2'], datasets: [{ label: 'Impedancia', data: [65, 59, 90, 81, 56], fill: true, backgroundColor: 'rgba(0, 102, 178, 0.2)', borderColor: '#0066b2' }] },
+                options: { ...ctxStyle, plugins: { legend: { display: true } } }
+            });
+        }
+    },
+
     approveUser(id) {
         this.pendingApprovals = this.pendingApprovals.filter(u => u.id !== id);
-        this.toast("Usuario aprobado exitosamente", "success");
+        this.toast("Especialista Validado Correctamente", "success");
         this.switchView('home');
     },
 
@@ -175,13 +193,13 @@ const app = {
         this.addMessageToSidebar(text, 'user');
         this.chatHistory.push({ role: 'user', parts: [{ text }] });
         input.value = '';
-        this.callGeminiSidebar();
+        this.callGeminiIntelligence();
     },
 
-    async callGeminiSidebar() {
+    async callGeminiIntelligence() {
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${this.apiKey}`;
         const payload = { 
-            system_instruction: { parts: [{ text: `Expert Clinical Assistant Melody. Context: Role ${this.currentUser.role}, Country ${this.currentUser.country}. Provide professional technical answers.` }] },
+            system_instruction: { parts: [{ text: `Melody Intelligence V12. Role: ${this.currentUser.role}, Country: ${this.currentUser.country}. Act as a clinical data analyst. Help verify warranties, clinical logs, and commercial targets.` }] },
             contents: this.chatHistory.slice(-10)
         };
         try {
@@ -191,7 +209,7 @@ const app = {
             this.addMessageToSidebar(text, 'ai');
             this.chatHistory.push({ role: 'model', parts: [{ text }] });
             localStorage.setItem('ab_chat_history_v11', JSON.stringify(this.chatHistory.slice(-20)));
-        } catch (e) { this.toast("Error de conexión con Melody", "error"); }
+        } catch (e) { this.toast("Error de Análisis", "error"); }
     },
 
     addMessageToSidebar(text, type) {
@@ -209,13 +227,9 @@ const app = {
         this.chatHistory.forEach(msg => this.addMessageToSidebar(msg.parts[0].text, msg.role === 'user' ? 'user' : 'ai'));
     },
 
-    getProfileHTML() {
-        return `<div class="ab-card"><h3>${this.currentUser.name}</h3><p>${this.currentUser.role} | ${this.currentUser.country}</p><button class="ab-btn" style="margin-top:24px; color:var(--danger);" onclick="app.logout()">Cerrar Sesión</button></div>`;
-    },
-
-    getToolsHTML() { return `<div class="ab-card"><h3>Herramientas de ${this.currentUser.role}</h3><p>Acceso a módulos especializados de ${this.currentUser.country}.</p></div>`; },
-    getStoreHTML() { return `<div class="ab-card"><h3>Tienda Regional</h3><p>Cotizaciones y Marketplace para ${this.currentUser.country}.</p></div>`; }
+    getProfileHTML() { return `<div class="ab-card"><h3>${this.currentUser.name}</h3><p>${this.currentUser.role}</p><button class="ab-btn" style="color:var(--danger);" onclick="app.logout()">Log out</button></div>`; },
+    getToolsHTML() { return `<div class="ab-card"><h3>Clinical Tools V12</h3><p>Acceso a logs de hardware y diagnóstico.</p></div>`; },
+    getStoreHTML() { return `<div class="ab-card"><h3>Marketplace V12</h3><p>Cotizaciones y gestión de órdenes.</p></div>`; }
 };
-
 document.addEventListener('DOMContentLoaded', () => app.init());
 window.app = app;
