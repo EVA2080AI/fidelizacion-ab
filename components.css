@@ -1,82 +1,82 @@
-/* AB Official Components V15 - Temu Style */
+/* AB Professional UI Kit V16 */
 
-/* Progress Ring (Temu UI) */
-.progress-ring {
-    transform: rotate(-90deg);
+/* --- Advanced Form Fields --- */
+.ab-field { margin-bottom: 24px; position: relative; }
+.ab-field label { 
+    display: block; font-size: 0.7rem; font-weight: 800; 
+    text-transform: uppercase; letter-spacing: 0.05em; 
+    color: var(--secondary); margin-bottom: 8px;
 }
-.progress-ring-circle {
-    transition: stroke-dashoffset 0.8s ease;
-    stroke: var(--primary);
-    stroke-linecap: round;
+.ab-input {
+    width: 100%; padding: 12px 16px; 
+    background: var(--white); border: 1px solid var(--slate-200);
+    border-radius: var(--radius-sm); font-size: 0.95rem;
+    transition: var(--transition-smooth);
 }
-.progress-ring-bg {
-    stroke: var(--bg-light);
+.ab-input:focus { 
+    border-color: var(--primary); 
+    box-shadow: 0 0 0 4px var(--focus-ring);
 }
+.ab-input.error { border-color: var(--danger); background: var(--danger-bg); }
+.ab-input.success { border-color: var(--success); background: var(--success-bg); }
+.field-hint { font-size: 0.75rem; margin-top: 6px; color: var(--slate-500); }
+.field-hint.error { color: var(--danger); font-weight: 700; }
 
-/* Notification Bubble */
-.ab-notif {
-    background: white;
-    border-radius: var(--radius-md);
-    padding: 16px;
+/* --- Custom Switches & Checkboxes --- */
+.ab-switch {
+    display: inline-flex; align-items: center; gap: 12px; cursor: pointer;
+}
+.switch-track {
+    width: 44px; height: 24px; background: var(--slate-300);
+    border-radius: 12px; position: relative; transition: var(--transition-smooth);
+}
+.switch-knob {
+    width: 18px; height: 18px; background: white;
+    border-radius: 50%; position: absolute; top: 3px; left: 3px;
+    transition: var(--transition-smooth); box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+input:checked + .switch-track { background: var(--primary); }
+input:checked + .switch-track .switch-knob { left: 23px; }
+
+/* --- Stacked Toast Manager --- */
+#toast-container {
+    position: fixed; top: 24px; right: 24px;
+    display: flex; flex-direction: column; gap: 12px;
+    z-index: 10000; pointer-events: none;
+}
+.ab-toast {
+    min-width: 300px; padding: 16px 20px;
+    background: white; border-radius: var(--radius-md);
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    display: flex; gap: 12px;
-    align-items: center;
+    display: flex; align-items: center; gap: 12px;
     border-left: 4px solid var(--primary);
-    margin-bottom: 12px;
-    animation: scaleUp 0.4s var(--spring);
+    animation: toastSlide 0.4s var(--spring) forwards;
+    pointer-events: auto;
 }
-.ab-notif i { color: var(--primary); font-size: 1.2rem; }
+.ab-toast.success { border-color: var(--success); }
+.ab-toast.error { border-color: var(--danger); }
+.ab-toast.warning { border-color: var(--warning); }
 
-/* Interactive Streak Card */
-.streak-card {
-    background: linear-gradient(135deg, var(--primary), #00BFB2);
-    color: white;
-    padding: 24px;
-    border-radius: var(--radius-lg);
-    position: relative;
-    overflow: hidden;
+/* --- Skeletons & FeedBack --- */
+.ab-skeleton {
+    height: 12px; border-radius: 6px; background: var(--bg-light);
+    margin-bottom: 12px; position: relative; overflow: hidden;
 }
-.streak-card h3 { color: white; margin-top: 8px; }
-.streak-days {
-    display: flex; gap: 8px; margin-top: 16px;
-}
-.day-dot {
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.2);
+.ab-skeleton.circle { width: 48px; height: 48px; border-radius: 50%; }
+.ab-skeleton.heading { height: 24px; width: 60%; }
+
+.ab-loading-overlay {
+    position: absolute; inset: 0; background: rgba(255,255,255,0.7);
     display: flex; align-items: center; justify-content: center;
-    font-size: 0.75rem; font-weight: 800;
+    backdrop-filter: blur(2px); z-index: 10;
 }
-.day-dot.active { background: white; color: var(--primary); }
 
-/* Official Tables & Badges */
-.ab-table {
-    width: 100%; border-radius: var(--radius-md); overflow: hidden;
-    background: white; border: 1px solid var(--bg-light);
+/* App-Style Push Notification */
+.ab-push-notif {
+    width: 340px; background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(20px); border-radius: 20px;
+    padding: 16px; gap: 16px; border: 1px solid rgba(0,0,0,0.05);
+    display: flex; animation: toastSlide 0.5s var(--spring);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
 }
-.ab-table th {
-    background: var(--bg-light); padding: 12px 20px;
-    text-align: left; font-size: 0.75rem; text-transform: uppercase;
-}
-.ab-table td { padding: 16px 20px; border-bottom: 1px solid var(--bg-light); }
-
-/* Temu-style Action Button */
-.ab-action-btn {
-    padding: 14px 24px;
-    background: var(--primary);
-    color: white; font-weight: 800;
-    border-radius: var(--radius-sm);
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-}
-.ab-action-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 163, 218, 0.4); }
-
-/* Maintenance Bubble (Floating) */
-.maint-bubble {
-    padding: 8px 16px;
-    background: var(--warning);
-    color: white;
-    font-size: 0.75rem; font-weight: 900;
-    border-radius: 20px;
-    position: absolute; top: -10px; right: -10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
+.push-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; }

@@ -1,27 +1,31 @@
-/* Advance Bionics Official Design System V15 */
+/* Advance Bionics Official Design System V16 - Full UI Kit */
 :root {
-    /* Official AB Brand Colors */
-    --primary: #00A3DA;      /* AB Teal */
-    --secondary: #333333;    /* Charcoal */
-    --bg-light: #F1F1F1;     /* Utility Gray */
+    /* Brand DNA */
+    --primary: #00A3DA;
+    --primary-alt: #0084B1;
+    --secondary: #333333;
+    --bg-light: #F1F1F1;
     --white: #FFFFFF;
     
-    /* Functional Colors */
+    /* State Tokens */
     --success: #10b981;
+    --success-bg: rgba(16, 185, 129, 0.1);
     --warning: #f59e0b;
+    --warning-bg: rgba(245, 158, 11, 0.1);
     --danger: #ef4444;
-    --gold: #FFD700;
-
-    /* Spacing & Scaling (Corporate & Clean) */
+    --danger-bg: rgba(239, 68, 68, 0.1);
+    --focus-ring: rgba(0, 163, 218, 0.35);
+    
+    /* UI Geometry */
     --radius-sm: 4px;
     --radius-md: 8px;
     --radius-lg: 12px;
-    --transition-smooth: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-smooth: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     --shadow-premium: 0 4px 20px -5px rgba(0, 0, 0, 0.1);
-    --spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --shadow-hover: 0 10px 40px -10px rgba(0, 0, 0, 0.15);
 }
 
-/* Global Reset - Corporate Grade */
+/* Base Reset */
 * { 
     margin: 0; padding: 0; box-sizing: border-box; 
     font-family: 'Inter', -apple-system, sans-serif;
@@ -29,62 +33,29 @@
 }
 
 html, body {
-    min-height: 100dvh;
-    background: var(--bg-light);
-    color: var(--secondary);
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
+    min-height: 100dvh; background: var(--bg-light); color: var(--secondary);
+    line-height: 1.6; -webkit-font-smoothing: antialiased;
 }
 
-button, input, select {
-    appearance: none;
-    -webkit-appearance: none;
-    border: none;
-    background: none;
-    font: inherit;
-    color: inherit;
-    outline: none;
+/* Form Interaction tokens */
+.shimmer {
+    background: linear-gradient(90deg, #f0f0f0 25%, #f8f8f8 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
 }
 
-/* Official Typography */
-h1, h2, h3, h4 { 
-    font-weight: 900; 
-    color: var(--secondary); 
-    letter-spacing: -0.02em; 
-}
-.text-caps { 
-    text-transform: uppercase; 
-    letter-spacing: 0.1em; 
-    font-weight: 800; 
-    font-size: 0.7rem; 
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
 }
 
-/* Glass & Shadow Utils */
-.glass-effect {
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-}
-.shadow-premium { box-shadow: var(--shadow-premium); }
-
-/* Temu-Style Animations */
-@keyframes float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-    100% { transform: translateY(0px); }
+@keyframes toastSlide {
+    from { transform: translateX(120%) scale(0.9); opacity: 0; }
+    to { transform: translateX(0) scale(1); opacity: 1; }
 }
 
-@keyframes scaleUp {
-    from { transform: scale(0.8); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+@keyframes pulseBorder {
+    0% { box-shadow: 0 0 0 0 var(--focus-ring); }
+    70% { box-shadow: 0 0 0 8px rgba(0, 163, 218, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 163, 218, 0); }
 }
-
-@keyframes progressFill {
-    from { stroke-dashoffset: 283; }
-    to { stroke-dashoffset: var(--offset); }
-}
-
-.animate-float { animation: float 3s ease-in-out infinite; }
-.animate-pop { animation: scaleUp 0.4s var(--spring) forwards; }

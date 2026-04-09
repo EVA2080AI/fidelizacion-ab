@@ -4,14 +4,12 @@ const app = {
     chatHistory: JSON.parse(localStorage.getItem('ab_chat_history_v11')) || [],
     userPoints: parseInt(localStorage.getItem('ab_user_points')) || 850,
     careState: JSON.parse(localStorage.getItem('ab_care_state')) || { tmic: false, cable: false, dryer: false, battery: false },
-    streakDays: parseInt(localStorage.getItem('ab_streak')) || 5,
 
     init() {
         this.bindEvents();
         this.checkAuth();
         this.registerSW();
-        console.log("AB Interactive Care Hub V15 Online");
-        this.startMaintEngine();
+        console.log("AB Pro UI Kit V16 Online");
     },
 
     registerSW() { if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js'); },
@@ -20,8 +18,7 @@ const app = {
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => {
                 const view = item.getAttribute('data-view');
-                if (view === 'chat') { /* Persistent sidebar handled by CSS/Layout */ }
-                else if (view) this.switchView(view);
+                if (view) this.switchView(view);
             });
         });
     },
@@ -34,14 +31,26 @@ const app = {
     },
 
     login() {
-        const name = document.getElementById('login-name').value.trim();
+        const nameInput = document.getElementById('login-name');
+        const name = nameInput.value.trim();
         const role = document.getElementById('login-role').value;
         const country = document.getElementById('login-country').value;
-        if (!name) { this.toast("Nombre requerido", "error"); return; }
-        this.currentUser = { name, role, country, id: 'USR-' + Math.floor(Math.random()*1000) };
-        localStorage.setItem('ab_enterprise_user', JSON.stringify(this.currentUser));
-        this.checkAuth();
-        this.toast(`Acceso oficial AB: ${name}`, "success");
+        
+        if (!name) { 
+            nameInput.classList.add('error');
+            this.toast("Se requiere nombre completo para acceso clínico", "error"); 
+            return; 
+        }
+        
+        nameInput.classList.remove('error');
+        nameInput.classList.add('success');
+        
+        setTimeout(() => {
+            this.currentUser = { name, role, country, id: 'USR-' + Math.floor(Math.random()*1000) };
+            localStorage.setItem('ab_enterprise_user', JSON.stringify(this.currentUser));
+            this.checkAuth();
+            this.toast(`Acceso Autorizado: ${name}`, "success");
+        }, 500);
     },
 
     logout() { localStorage.clear(); location.reload(); },
@@ -53,32 +62,24 @@ const app = {
         document.querySelector('.user-avatar').innerText = this.currentUser.name[0];
     },
 
+    // V16 Toast Manager (Stacked)
     toast(text, type = "success") {
         const container = document.getElementById('toast-container');
+        if (!container) return;
+        
         const toast = document.createElement('div');
-        toast.className = `ab-toast glass-effect ${type}`;
-        toast.innerHTML = `<i data-lucide="${type==='success'?'check-circle':'alert-circle'}"></i> <span>${text}</span>`;
-        if (container) container.appendChild(toast);
-        lucide.createIcons();
-        setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateY(-20px)'; setTimeout(() => toast.remove(), 500); }, 3000);
-    },
-
-    showInteractiveNotif(msg, type = "info") {
-        const bubble = document.createElement('div');
-        bubble.className = "ab-notif shadow-premium animate-pop";
-        bubble.innerHTML = `<i data-lucide="bell"></i> <div><b>Recordatorio AB</b><p style='font-size:0.8rem; margin:0;'>${msg}</p></div>`;
-        document.body.appendChild(bubble);
-        lucide.createIcons();
-        setTimeout(() => { bubble.style.opacity = '0'; setTimeout(() => bubble.remove(), 500); }, 5000);
-    },
-
-    startMaintEngine() {
-        setInterval(() => {
-            const now = new Date();
-            if (now.getSeconds() === 0 && Math.random() > 0.8 && this.currentUser?.role === 'CLIENTE') {
-                this.showInteractiveNotif("Es hora de revisar tu deshumidificador nocturno.", "warning");
-            }
-        }, 10000);
+        toast.className = `ab-toast ${type}`;
+        const icons = { success: 'check-circle', error: 'alert-circle', warning: 'bell' };
+        toast.innerHTML = `<i data-lucide="${icons[type]}"></i> <div><b>${type.toUpperCase()}</b><p style="margin:0; font-size:0.8rem;">${text}</p></div>`;
+        
+        container.appendChild(toast);
+        if (window.lucide) lucide.createIcons();
+        
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(20px)';
+            setTimeout(() => toast.remove(), 400);
+        }, 4000);
     },
 
     switchView(viewId) {
@@ -88,92 +89,109 @@ const app = {
 
     renderRoleView(viewId) {
         const main = document.getElementById('main-content');
-        main.innerHTML = '';
-        const section = document.createElement('div');
-        section.id = `view-${viewId}`;
-        section.className = 'view active';
+        main.innerHTML = this.getSkeletonHTML(); // Shimmering state
         
-        switch(viewId) {
-            case 'home': section.innerHTML = this.getHomeHTML(); break;
-            case 'store': section.innerHTML = `<div class='ab-card'><h1>Tienda Oficial</h1><p>Equipos autorizados por Advance Bionics ${this.currentUser.country}.</p></div>`; break;
-            case 'tools': section.innerHTML = `<div class='ab-card'><h1>Herramientas Técnicas</h1><p>Terminal de diagnóstico para ${this.currentUser.role}.</p></div>`; break;
-            case 'profile': section.innerHTML = `<div class='ab-card'><h1>Perfil</h1><button class='ab-btn' style='color:var(--danger)' onclick='app.logout()'>Cerrar Sesión</button></div>`; break;
-        }
-        
-        main.appendChild(section);
-        if (window.lucide) lucide.createIcons();
+        setTimeout(() => {
+            main.innerHTML = '';
+            const section = document.createElement('div');
+            section.id = `view-${viewId}`;
+            section.className = 'view active';
+            
+            switch(viewId) {
+                case 'home': section.innerHTML = this.getHomeHTML(); break;
+                case 'tools': section.innerHTML = this.getToolsHTML(); break;
+                case 'store': section.innerHTML = `<div class='ab-card'><h1>Tienda Oficial</h1></div>`; break;
+                case 'profile': section.innerHTML = `<div class='ab-card'><h1>Perfil</h1><button onclick='app.logout()' class='ab-btn' style='color:var(--danger)'>Cerrar Sesión</button></div>`; break;
+            }
+            
+            main.appendChild(section);
+            if (window.lucide) lucide.createIcons();
+        }, 400);
     },
 
-    getHomeHTML() {
-        const role = this.currentUser.role;
-        if (role === 'CLIENTE') {
-            const completed = Object.values(this.careState).filter(val => val).length;
-            const progress = (completed / 4) * 100;
-            const offset = 283 - (283 * progress) / 100;
+    getSkeletonHTML() {
+        return `
+            <div class="ab-skeleton heading shimmer"></div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-top:32px;">
+                <div class="ab-card shimmer" style="height:200px; background:none;"></div>
+                <div class="ab-card shimmer" style="height:200px; background:none;"></div>
+            </div>
+        `;
+    },
 
-            return `
-                <div style="margin-bottom:32px;"><h1>Buen día, ${this.currentUser.name}</h1><p style="color:var(--slate-500);">Tu salud auditiva es nuestra prioridad.</p></div>
-                
-                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:24px;">
-                    <!-- Progress Card (Temu Style) -->
-                    <div class="ab-card shadow-premium animate-pop" style="display:flex; align-items:center; justify-content:space-between;">
-                        <div>
-                            <span class="text-caps" style="color:var(--primary);">CUIDADO DIARIO</span>
-                            <h2 style="margin:8px 0;">${progress}%</h2>
-                            <p style="font-size:0.8rem; color:var(--slate-500);">${4 - completed} tareas pendientes.</p>
-                        </div>
-                        <div class="progress-ring-container">
-                            <svg class="progress-ring" width="80" height="80">
-                                <circle class="progress-ring-bg" stroke-width="8" fill="transparent" r="36" cx="40" cy="40"/>
-                                <circle class="progress-ring-circle" stroke-width="8" fill="transparent" r="36" cx="40" cy="40" 
-                                        style="stroke-dasharray: 283; stroke-dashoffset: ${offset}; --offset: ${offset};"/>
-                            </svg>
-                        </div>
+    getToolsHTML() {
+        return `
+            <div style="margin-bottom:32px;"><h1>Component UI Kit V16</h1><p style="color:var(--slate-500);">Librería estandarizada de Advance Bionics.</p></div>
+            
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap:32px;">
+                <!-- Inputs Section -->
+                <div class="ab-card shadow-premium">
+                    <h4 style="margin-bottom:24px;">FORM FIELDS</h4>
+                    <div class="ab-field">
+                        <label>Normal State</label>
+                        <input type="text" class="ab-input" placeholder="Escribe aquí...">
                     </div>
-
-                    <!-- Streak Card -->
-                    <div class="streak-card shadow-premium" style="grid-column: span 1;">
-                        <span class="text-caps" style="opacity:0.8;">RECHA ACTUAL</span>
-                        <h3>${this.streakDays} Días Sin Parar</h3>
-                        <div class="streak-days">
-                            ${[...Array(7)].map((_, i) => `<div class="day-dot ${i < this.streakDays ? 'active' : ''}">${i + 1}</div>`).join('')}
-                        </div>
-                        <div style="margin-top:20px; font-size:0.75rem; font-weight:700;">+50 Puntos al llegar a 7 días.</div>
+                    <div class="ab-field">
+                        <label>Focus / Valid State</label>
+                        <input type="text" class="ab-input success" value="Valor válido">
+                        <p class="field-hint" style="color:var(--success);">Check clínico completado.</p>
                     </div>
+                    <div class="ab-field">
+                        <label>Error State</label>
+                        <input type="text" class="ab-input error" value="Error de sistema">
+                        <p class="field-hint error">Este campo es obligatorio.</p>
+                    </div>
+                </div>
 
-                    <!-- Maintenance Tasks -->
-                    <div class="ab-card shadow-premium" style="grid-column: span 2;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                            <span class="text-caps">CHECKLIST TÉCNICO</span>
-                            <span class="ab-badge success">VIGENTE</span>
-                        </div>
-                        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:16px;">
-                            ${Object.keys(this.careState).map(key => `
-                                <div class="ab-card ${this.careState[key] ? 'success' : 'glass-effect'}" 
-                                     style="text-align:center; padding:16px; position:relative; cursor:pointer;"
-                                     onclick="app.completeTask('${key}')">
-                                    ${this.careState[key] ? '<i data-lucide="check-circle" style="color:white;"></i>' : `<i data-lucide="circle"></i>`}
-                                    <p style="margin-top:8px; font-weight:800; font-size:0.85rem;">${key.toUpperCase()}</p>
-                                    ${!this.careState[key] ? '<span class="maint-bubble">¡TOCA!</span>' : ''}
-                                </div>
-                            `).join('')}
+                <!-- Toggles Section -->
+                <div class="ab-card shadow-premium">
+                    <h4 style="margin-bottom:24px;">SWITCHES & TOGGLES</h4>
+                    <div style="display:flex; flex-direction:column; gap:20px;">
+                        <label class="ab-switch">
+                            <input type="checkbox" style="display:none;" onchange="app.toast('Modo Nocturno Alterado', 'warning')">
+                            <div class="switch-track"><div class="switch-knob"></div></div>
+                            <span style="font-weight:700; font-size:0.9rem;">Notificaciones Push</span>
+                        </label>
+                        <label class="ab-switch">
+                            <input type="checkbox" checked style="display:none;">
+                            <div class="switch-track"><div class="switch-knob"></div></div>
+                            <span style="font-weight:700; font-size:0.9rem;">Sincronización Cloud</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Notif Section -->
+                <div class="ab-card shadow-premium">
+                    <h4 style="margin-bottom:24px;">NOTIFICATION SUITE</h4>
+                    <button class="ab-btn ab-btn-primary" style="width:100%; margin-bottom:12px;" onclick="app.toast('¡Nueva Alerta Clínica!', 'success')">Lanzar Toast</button>
+                    <button class="ab-btn" style="width:100%; border:1px solid var(--slate-200);" onclick="app.toast('Error de conexión', 'error')">Lanzar Error</button>
+                    
+                    <div style="margin-top:24px;">
+                        <span class="text-caps">Push Notification Style</span>
+                        <div class="ab-push-notif" style="margin-top:12px; position:static; animation:none;">
+                            <div class="push-icon"><i data-lucide="bell"></i></div>
+                            <div><b style="font-size:0.85rem;">Melody</b><p style="margin:0; font-size:0.75rem;">Tu checklist técnico expira en 5 min.</p></div>
                         </div>
                     </div>
                 </div>
-            `;
-        } else {
-            return `<div class='ab-card'><h1>Bienvenido al Panel de ${role}</h1><p>Sistema oficial Advance Bionics.</p></div>`;
-        }
+            </div>
+        `;
     },
 
-    completeTask(id) {
-        if (this.careState[id]) return;
-        this.careState[id] = true;
-        localStorage.setItem('ab_care_state', JSON.stringify(this.careState));
-        this.userPoints += 25;
-        this.renderRoleView('home');
-        this.toast(`¡Tarea completada! +25 Puntos`, "success");
-        this.showInteractiveNotif("Has ganado 25 puntos de fidelidad. ¡Vas por buen camino!", "success");
+    getHomeHTML() {
+        return `
+            <div style="margin-bottom:32px;"><h1>Resumen de Gestión</h1><p>Bienvenido al Centro de Control V16.</p></div>
+            <div class="ab-card shadow-premium">
+                <h4 style="margin-bottom:20px;">ESTADO DE SALUD DEL HUB</h4>
+                <div style="display:flex; gap:24px; align-items:center;">
+                    <div class="ab-skeleton circle shimmer"></div>
+                    <div style="flex:1;">
+                        <div class="ab-skeleton heading shimmer"></div>
+                        <div class="ab-skeleton shimmer" style="width:80%;"></div>
+                    </div>
+                </div>
+            </div>
+        `;
     },
 
     sendMessageSidebar() {
@@ -183,13 +201,13 @@ const app = {
         this.addMessageToSidebar(text, 'user');
         this.chatHistory.push({ role: 'user', parts: [{ text }] });
         input.value = '';
-        this.callGeminiOfficial();
+        this.callGeminiPro();
     },
 
-    async callGeminiOfficial() {
+    async callGeminiPro() {
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${this.apiKey}`;
         const payload = { 
-            system_instruction: { parts: [{ text: `Official Advance Bionics Assistant. Clinical Brand: Teal #00A3DA. Role: ${this.currentUser.role}. Tone: Professional, authoritative, supportive. Focused on Maintenance and Clinical Outcomes.` }] },
+            system_instruction: { parts: [{ text: `Clinical Design System Specialist. Role: ${this.currentUser.role}. Assist with V16 UI Kit maintenance.` }] },
             contents: this.chatHistory.slice(-10)
         };
         try {
@@ -198,7 +216,7 @@ const app = {
             const text = data.candidates[0].content.parts[0].text;
             this.addMessageToSidebar(text, 'ai');
             this.chatHistory.push({ role: 'model', parts: [{ text }] });
-        } catch (e) { this.toast("Error de Conexión AB", "error"); }
+        } catch (e) { this.toast("Melody offline", "error"); }
     },
 
     addMessageToSidebar(text, type) {
