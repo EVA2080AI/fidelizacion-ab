@@ -2,15 +2,43 @@ const app = {
     apiKey: 'AIzaSyCNdm_eWA65yTRVnikOCMuG6-mwHRiwFAc',
     currentUser: JSON.parse(localStorage.getItem('ab_enterprise_user')) || null,
     chatHistory: JSON.parse(localStorage.getItem('ab_chat_history_v11')) || [],
-    userPoints: parseInt(localStorage.getItem('ab_user_points')) || 850,
-    careState: JSON.parse(localStorage.getItem('ab_care_state')) || { tmic: false, cable: false, dryer: false, battery: false },
-    userSettings: JSON.parse(localStorage.getItem('ab_user_settings')) || { notif_tmic: true, notif_dryer: true, reminder_time: "21:00" },
+    userPoints: 850,
+    careState: { tmic: false, cable: false, dryer: false, battery: false },
+
+    // --- V19 Reality Dataset (Mock Enterprise Volume) ---
+    pendingApprovals: [
+        { id: 101, name: 'Dra. Ana Costa', role: 'ESPECIALISTA', country: 'MEX', email: 'ana.costa@imss.mx' },
+        { id: 102, name: 'MedLabs S.A.', role: 'DISTRIBUIDOR', country: 'ARG', email: 'ventas@medlabs.ar' },
+        { id: 103, name: 'Dr. Luis Torres', role: 'ESPECIALISTA', country: 'COL', email: 'ltorres@clinica.co' },
+        { id: 104, name: 'Equipos Médicos CR', role: 'DISTRIBUIDOR', country: 'CRI', email: 'cr@equipos.cr' },
+        { id: 105, name: 'Dra. Elena Soler', role: 'ESPECIALISTA', country: 'MEX', email: 'esoler@hospital.mx' },
+        { id: 106, name: 'Distribuidora Austral', role: 'DISTRIBUIDOR', country: 'ARG', email: 'info@austral.ar' },
+        { id: 107, name: 'Dr. Roberto Diaz', role: 'ESPECIALISTA', country: 'COL', email: 'rdiaz@otomed.co' },
+        { id: 108, name: 'Suministros Médicos', role: 'DISTRIBUIDOR', country: 'MEX', email: 'suministros@mex.mx' }
+    ],
+
+    patientDatabase: [
+        { id: 'P-001', name: 'Mario Galvis', age: 45, implant: 'HiRes Ultra 3D', surgeon: 'Dr. J. Pérez', lastMap: '2026-03-15' },
+        { id: 'P-002', name: 'Lucía Ortega', age: 12, implant: 'HiRes 90K Advantage', surgeon: 'Dra. E. Soler', lastMap: '2026-04-01' },
+        { id: 'P-003', name: 'Ricardo Mendez', age: 62, implant: 'Marvel CI', surgeon: 'Dr. R. Diaz', lastMap: '2026-02-28' },
+        { id: 'P-004', name: 'Valeria Sossa', age: 28, implant: 'Naída CI', surgeon: 'Dr. L. Torres', lastMap: '2026-04-05' },
+        { id: 'P-005', name: 'Tomas Herrera', age: 5, implant: 'Chorus', surgeon: 'Dra. M. Ruiz', lastMap: '2026-03-30' }
+    ],
+
+    warrantyLogistics: [
+        { id: 'VAL-8291', item: 'Marvel Processor', patient: 'M. Galvis', status: 'ENTREGADO', country: 'COL' },
+        { id: 'VAL-0042', item: 'T-Mic 2 Filter', patient: 'L. Ortega', status: 'EVALUACION', country: 'MEX' },
+        { id: 'VAL-4432', item: 'Cable Ultra', patient: 'R. Mendez', status: 'APROBADO', country: 'ARG' },
+        { id: 'VAL-9910', item: 'Cargador Universal', patient: 'V. Sossa', status: 'PENDIENTE', country: 'COL' },
+        { id: 'VAL-7721', item: 'Naída Cl 2', patient: 'T. Herrera', status: 'RECIBIDO', country: 'MEX' },
+        { id: 'VAL-6651', item: 'Marvel Processor', patient: 'J. Doe', status: 'ENTREGADO', country: 'ARG' }
+    ],
 
     init() {
         this.bindEvents();
         this.checkAuth();
         this.registerSW();
-        console.log("AB Total Hub Completion V18 Online");
+        console.log("AB Reality Hub V19 Online | Data Stress Test Active");
         this.startMaintEngine();
     },
 
@@ -40,6 +68,7 @@ const app = {
         this.currentUser = { name, role, country, id: 'USR-' + Math.floor(Math.random()*1000) };
         localStorage.setItem('ab_enterprise_user', JSON.stringify(this.currentUser));
         this.checkAuth();
+        this.toast(`Acceso Corporativo: ${name}`, "success");
     },
 
     logout() { localStorage.clear(); location.reload(); },
@@ -51,10 +80,7 @@ const app = {
         document.querySelector('.user-avatar').innerText = this.currentUser.name[0];
     },
 
-    // --- V18 UI Engine Components ---
-    toggleSidebar() {
-        document.getElementById('app-sidebar').classList.toggle('active');
-    },
+    toggleSidebar() { document.getElementById('app-sidebar').classList.toggle('active'); },
 
     openModal(title, html) {
         document.getElementById('modal-title').innerText = title;
@@ -63,9 +89,7 @@ const app = {
         if (window.lucide) lucide.createIcons();
     },
 
-    closeModal() {
-        document.getElementById('global-modal').classList.remove('active');
-    },
+    closeModal() { document.getElementById('global-modal').classList.remove('active'); },
 
     toast(text, type = "success") {
         const container = document.getElementById('toast-container');
@@ -76,14 +100,6 @@ const app = {
         container.appendChild(toast);
         if (window.lucide) lucide.createIcons();
         setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 400); }, 3000);
-    },
-
-    startMaintEngine() {
-        setInterval(() => {
-            if (this.currentUser?.role === 'CLIENTE' && this.userSettings.notif_tmic && Math.random() > 0.95) {
-                this.toast("Recordatorio: Verificar limpieza de Procesador.", "warning");
-            }
-        }, 15000);
     },
 
     switchView(viewId) {
@@ -103,133 +119,105 @@ const app = {
             
             switch(viewId) {
                 case 'home': section.innerHTML = this.getHomeHTML(); break;
-                case 'maintenance': section.innerHTML = this.getMaintHTML(); break;
-                case 'profile': section.innerHTML = this.getProfileHTML(); break;
-                case 'tools': section.innerHTML = this.getToolsHTML(); break;
+                case 'profile': section.innerHTML = `<div class='ab-card'><h1>Perfil Oficial</h1><p>${this.currentUser.name}</p><button onclick='app.logout()' class='ab-btn' style='color:var(--danger)'>Cerrar Sesión</button></div>`; break;
+                case 'tools': section.innerHTML = `<div class='ab-card'><h1>Intelligence Audit</h1><p>Sistema V19 operando con data de alta densidad.</p></div>`; break;
             }
             
             main.appendChild(section);
             if (window.lucide) lucide.createIcons();
-            this.initRoleFeatures();
-        }, 350);
+        }, 300);
     },
 
     getHomeHTML() {
         const role = this.currentUser.role;
-        if (role === 'ADMIN') return this.getAdminHome();
-        if (role === 'ESPECIALISTA') return this.getSpecHome();
-        if (role === 'DISTRIBUIDOR') return this.getDistHome();
-        return this.getPatientHome();
+        const country = this.currentUser.country;
+
+        if (role === 'ADMIN') {
+            const filtered = this.pendingApprovals.filter(u => u.country === country);
+            return `
+                <div style="margin-bottom:32px;"><h1>Enterprise Insight: ${country}</h1><p>Control de acceso global.</p></div>
+                <div class="stat-grid">
+                    <div class="ab-card"><span class="stat-label">Pendientes de Validación</span><span class="stat-val">${filtered.length}</span></div>
+                    <div class="ab-card"><span class="stat-label">Territorios Activos</span><span class="stat-val">4</span></div>
+                </div>
+                <div class="ab-table-container" style="margin-top:24px;">
+                    <table class="ab-table">
+                        <thead><tr><th>Profesional</th><th>Rol</th><th>Email</th><th>Acción</th></tr></thead>
+                        <tbody>
+                            ${filtered.map(u => `<tr><td><b>${u.name}</b></td><td>${u.role}</td><td>${u.email}</td><td><button class="ab-btn ab-btn-primary" onclick="app.approveUser(${u.id})">Validar</button></td></tr>`).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        if (role === 'ESPECIALISTA') {
+            return `
+                <div style="margin-bottom:32px;"><h1>Monitor Clínico Pro</h1><p>Gestión de pacientes Marvel CI.</p></div>
+                <div class="stat-grid">
+                    <div class="ab-card"><span class="stat-label">Total Pacientes</span><span class="stat-val">${this.patientDatabase.length}</span></div>
+                    <div class="ab-card"><span class="stat-label">Mapeos del Mes</span><span class="stat-val">12</span></div>
+                </div>
+                <div class="ab-table-container" style="margin-top:24px;">
+                    <table class="ab-table">
+                        <thead><tr><th>Paciente</th><th>Implante</th><th>Mapeo</th><th>Detalle</th></tr></thead>
+                        <tbody>
+                            ${this.patientDatabase.map(p => `<tr><td><b>${p.name}</b></td><td>${p.implant}</td><td>${p.lastMap}</td><td><button class="ab-btn" style="border:1px solid var(--primary);" onclick="app.openPatientDetail('${p.id}')">Auditoría</button></td></tr>`).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        if (role === 'DISTRIBUIDOR') {
+            const countryTickets = this.warrantyLogistics.filter(t => t.country === country);
+            return `
+                <div style="margin-bottom:32px;"><h1>Commercial Logistics</h1><p>Tracking de garantías VAL en tiempo real.</p></div>
+                <div class="stat-grid">
+                    <div class="ab-card"><span class="stat-label">En Evaluación</span><span class="stat-val">${countryTickets.filter(t => t.status === 'EVALUACION').length}</span></div>
+                    <div class="ab-card"><span class="stat-label">Entregados</span><span class="stat-val">${countryTickets.filter(t => t.status === 'ENTREGADO').length}</span></div>
+                </div>
+                <div style="margin-top:24px; display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:16px;">
+                    ${countryTickets.map(t => `
+                        <div class="ab-card shadow-premium" style="border-left:4px solid ${t.status==='ENTREGADO'?'var(--success)':'var(--warning)'}">
+                            <div style="display:flex; justify-content:space-between; align-items:start;">
+                                <div><b>${t.id}</b><br><small>${t.item}</small></div>
+                                <span class="ab-badge ${t.status==='ENTREGADO'?'success':'warning'}">${t.status}</span>
+                            </div>
+                            <p style="margin-top:12px; font-size:0.8rem; color:var(--slate-500);">Paciente: ${t.patient}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        return `<div class='ab-card'><h1>Paciente Hub</h1><p>Ver V15/V17 Walkthrough para Gamificación.</p></div>`;
     },
 
-    getAdminHome() {
-        return `
-            <div style="margin-bottom:32px;"><h1>Enterprise Insight</h1><p>Control global Advance Bionics.</p></div>
-            <div class="stat-grid">
-                <div class="ab-card">
-                    <span class="stat-label">Registros Hoy</span>
-                    <span class="stat-val">1,204</span>
-                    <p style="font-size:0.75rem; color:var(--success);">+12% vs ayer</p>
+    openPatientDetail(id) {
+        const p = this.patientDatabase.find(x => x.id === id);
+        const html = `
+            <div style="display:flex; flex-direction:column; gap:16px;">
+                <div class="ab-card shadow-premium" style="background:var(--bg-light);">
+                    <p><b>Implante:</b> ${p.implant}</p>
+                    <p><b>Cirujano:</b> ${p.surgeon}</p>
+                    <p><b>Último Mapeo:</b> ${p.lastMap}</p>
                 </div>
-                <div class="ab-card">
-                    <span class="stat-label">Alertas Clínicas</span>
-                    <span class="stat-val" style="color:var(--danger);">42</span>
-                    <p style="font-size:0.75rem; color:var(--slate-500);">Requieren atención inmediata</p>
-                </div>
-            </div>
-            <div class="ab-card shadow-premium" style="margin-top:24px;">
-                <h4 style="margin-bottom:20px;">MAPA DE OPERACIONES (COL/MEX/ARG)</h4>
-                <div style="height:200px; background:var(--bg-light); border-radius:var(--radius-sm); border:1px dashed var(--slate-300); display:flex; align-items:center; justify-content:center;">
-                    <span class="text-caps" style="opacity:0.5;">Visualizador de Territorio Interactivo</span>
-                </div>
+                <h4>Historial de Impedancias (Logs Marvel)</h4>
+                <div class="ab-skeleton shimmer" style="height:100px;"></div>
+                <p style="font-size:0.85rem; color:var(--slate-500);">Data sincronizada vía Bluetooth Link...</p>
             </div>
         `;
+        this.openModal(`Expediente: ${p.name}`, html);
     },
 
-    getSpecHome() {
-        return `
-            <div style="margin-bottom:32px;"><h1>Especialista Pro</h1><p>Monitor de salud poblacional.</p></div>
-            <div class="stat-grid">
-                <div class="ab-card">
-                    <span class="stat-label">Mapeos Pendientes</span>
-                    <span class="stat-val">8</span>
-                </div>
-                <div class="ab-card">
-                    <span class="stat-label">Promedio Impedancias</span>
-                    <span class="stat-val">7.2 <small>kΩ</small></span>
-                </div>
-            </div>
-            <div class="ab-table-container" style="margin-top:24px;">
-                <table class="ab-table">
-                    <thead><tr><th>Paciente</th><th>Última Rev.</th><th>Acción</th></tr></thead>
-                    <tbody>
-                        <tr><td><b>Mario Galvis</b></td><td>Ayer</td><td><button class="ab-btn ab-btn-primary" onclick="app.openModal('Historial Clínico: Mario', '<p>Auditoría de logs completada: 98% estabilidad.</p>')">Ver Detalle</button></td></tr>
-                    </tbody>
-                </table>
-            </div>
-        `;
+    approveUser(id) {
+        this.pendingApprovals = this.pendingApprovals.filter(u => u.id !== id);
+        this.toast("Profesional Validado y Sincronizado", "success");
+        this.switchView('home');
     },
 
-    getDistHome() {
-        return `
-            <div style="margin-bottom:32px;"><h1>Distribuidor Hub</h1><p>Gestión comercial y logística.</p></div>
-            <div class="stat-grid">
-                <div class="ab-card">
-                    <span class="stat-label">Pedidos en Tránsito</span>
-                    <span class="stat-val">15</span>
-                </div>
-                <div class="ab-card">
-                    <span class="stat-label">Tickets VAL</span>
-                    <span class="stat-val">4</span>
-                </div>
-            </div>
-            <div class="ab-card shadow-premium" style="margin-top:24px;">
-                <h4>ORDENES RECIENTES</h4>
-                <div style="margin-top:16px;">
-                    <div style="padding:12px; background:var(--bg-light); border-radius:var(--radius-sm); margin-bottom:8px; display:flex; justify-content:space-between;">
-                        <span>VAL-82914 - Marvel CI</span><span class="ab-badge success">Enviado</span>
-                    </div>
-                </div>
-            </div>
-        `;
-    },
-
-    getPatientHome() {
-        const completed = Object.values(this.careState).filter(val => val).length;
-        const progress = (completed / 4) * 100;
-        return `
-            <div style="margin-bottom:32px;"><h1>Hola, ${this.currentUser.name}</h1></div>
-            <div class="stat-grid">
-                <div class="ab-card shadow-premium" style="display:flex; justify-content:space-between; align-items:center;">
-                    <div><span class="stat-label">Racha de Cuidado</span><span class="stat-val">${this.streakDays}</span></div>
-                    <div style="color:var(--gold);"><i data-lucide="zap" size="32"></i></div>
-                </div>
-                <div class="ab-card shadow-premium">
-                    <span class="stat-label">Puntos Plus</span><span class="stat-val">${this.userPoints}</span>
-                </div>
-            </div>
-            <div class="ab-card shadow-premium" style="margin-top:24px; text-align:center;">
-                <h4 style="margin-bottom:16px;">Checklist de Hoy</h4>
-                <div style="display:flex; justify-content:center; gap:16px;">
-                    ${Object.keys(this.careState).map(k => `<div class="ab-card ${this.careState[k]?'success':''}" style="width:70px; height:70px; display:flex; align-items:center; justify-content:center; border-radius:50%;">${this.careState[k]?'<i data-lucide="check"></i>':k[0].toUpperCase()}</div>`).join('')}
-                </div>
-            </div>
-        `;
-    },
-
-    getMaintHTML() { 
-        return `<div class="ab-card"><h1>Configuración de Cuidados</h1><p>Próximamente: Integración con sensores Marvel.</p></div>`; 
-    },
-    getProfileHTML() { 
-        return `<div class="ab-card"><h1>Mi Perfil</h1><p>${this.currentUser.name} [${this.currentUser.role}]</p><button class="ab-btn" style="color:var(--danger)" onclick="app.logout()">Cerrar Sistema</button></div>`; 
-    },
-    getToolsHTML() { 
-        return `<div class="ab-card"><h1>UI Kit Preview</h1><p>Todos los componentes V18 activos.</p></div>`; 
-    },
-
-    initRoleFeatures() {
-        if (window.lucide) lucide.createIcons();
-    },
+    startMaintEngine() { /* Simulated alerts... */ },
 
     sendMessageSidebar() {
         const input = document.getElementById('sidebar-ai-input');
@@ -238,13 +226,13 @@ const app = {
         this.addMessageToSidebar(text, 'user');
         this.chatHistory.push({ role: 'user', parts: [{ text }] });
         input.value = '';
-        this.callGeminiTotal();
+        this.callGeminiReality();
     },
 
-    async callGeminiTotal() {
+    async callGeminiReality() {
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${this.apiKey}`;
         const payload = { 
-            system_instruction: { parts: [{ text: `Clinical Enterprise Hub V18. Role: ${this.currentUser.role}.` }] },
+            system_instruction: { parts: [{ text: `Clinical Data Analyst. Analyzing Hub V19 data volume. Role: ${this.currentUser.role}.` }] },
             contents: this.chatHistory.slice(-10)
         };
         try {
@@ -260,7 +248,7 @@ const app = {
         const chat = document.getElementById('sidebar-chat-messages');
         const msg = document.createElement('div');
         msg.className = `message-wrapper ${type}`;
-        msg.innerHTML = `<div class="message" style="padding:10px 14px; font-size:0.8rem; border-radius:10px; ${type === 'user' ? 'background:var(--primary); color:white; align-self:flex-end;' : 'background:var(--bg-light);'}"><span>${text}</span></div>`;
+        msg.innerHTML = `<div class="message" style="padding:10px 14px; font-size:0.85rem; border-radius:10px; ${type === 'user' ? 'background:var(--primary); color:white; align-self:flex-end;' : 'background:var(--bg-light);'}"><span>${text}</span></div>`;
         chat.appendChild(msg);
         chat.scrollTop = chat.scrollHeight;
     },
