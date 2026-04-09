@@ -13,7 +13,16 @@ const app = {
         this.bindEvents();
         this.checkAuth();
         this.updateLoyaltyUI();
-        console.log("AB Care Hub V8 Design System Installed");
+        this.registerSW();
+        console.log("AB Care Hub V9 PWA Engine Initialized");
+    },
+
+    registerSW() {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+                .then(() => console.log("PWA Service Worker Registered"))
+                .catch(err => console.error("SW Registration Failed", err));
+        }
     },
 
     bindEvents() {
