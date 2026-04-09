@@ -31,7 +31,8 @@ const app = {
             loginScreen.classList.add('active');
         } else {
             loginScreen.classList.remove('active');
-            this.checkOnboarding();
+            // Wait for login screen to fade before showing onboarding
+            setTimeout(() => this.checkOnboarding(), 400);
         }
     },
 
@@ -51,9 +52,14 @@ const app = {
         localStorage.setItem('ab_user_device', this.deviceModel);
         
         document.getElementById('login-screen').classList.remove('active');
-        this.startBridge();
-        this.checkOnboarding();
-        this.updateLoyaltyUI();
+        
+        // Sequence: Start Bridge -> Then see if onboarding is needed
+        setTimeout(() => {
+            this.startBridge();
+            this.checkOnboarding();
+            this.updateLoyaltyUI();
+            this.switchView('assistant');
+        }, 400);
     },
 
     logout() {
