@@ -95,6 +95,7 @@
 
             <div style="display: flex; flex-direction: column; gap: 8px;">
                 <button class="nav-item" data-view="home"><i data-lucide="layout-dashboard"></i><span>Panel</span></button>
+                <button class="nav-item" data-view="store"><i data-lucide="shopping-cart"></i><span>Tienda</span></button>
                 <button class="nav-item" data-view="benefits"><i data-lucide="award"></i><span>Premios</span></button>
                 <button class="nav-item" data-view="care"><i data-lucide="activity"></i><span>Técnico</span></button>
                 <button class="nav-item active" data-view="assistant"><i data-lucide="message-square"></i><span>Melody</span></button>
@@ -104,6 +105,7 @@
 
         <!-- Main Workspace -->
         <main id="main-content">
+            <input type="file" id="receipt-upload" style="display: none;" onchange="app.handleFileSelected(event)">
             <header class="mobile-header glass-effect mobile-only shadow-premium" style="border: none; border-bottom: 1px solid var(--slate-100);">
                 <div class="logo-mark" style="width: 32px; height: 32px; font-size: 0.8rem;">AB</div>
                 <div class="ab-badge success" id="mobile-tier">BRONCE</div>
@@ -114,6 +116,7 @@
         <!-- iPhone Pro Floating Nav -->
         <nav class="bottom-nav mobile-only glass-effect shadow-premium">
             <button class="nav-item" data-view="home"><i data-lucide="layout-dashboard"></i></button>
+            <button class="nav-item" data-view="store"><i data-lucide="shopping-cart"></i></button>
             <button class="nav-item" data-view="benefits"><i data-lucide="award"></i></button>
             <button class="nav-item" data-view="care"><i data-lucide="activity"></i></button>
             <button class="nav-item active" data-view="assistant"><i data-lucide="message-square"></i></button>
