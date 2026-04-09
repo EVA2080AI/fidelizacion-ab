@@ -1,0 +1,20 @@
+node_modules/
+.DS_Store
+models.json
+models.json
+Candidatos.json
+Difusiones AB - COLEGIO.json
+Encuesta de satisfacción.json
+Formulario (RMA) copia.json
+Formulario (RMA).json
+Pendiente de cotizacion.json
+Revision Garantia.json
+VALGARANTIA.json
+models.json
+*.json
+!app.js
+!index.html
+!styles.css
+*.docx
+*.pptx
+*.eml
