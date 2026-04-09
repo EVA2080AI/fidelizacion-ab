@@ -1,6 +1,6 @@
 const app = {
     apiKey: 'AIzaSyCNdm_eWA65yTRVnikOCMuG6-mwHRiwFAc',
-    currentView: 'home',
+    currentView: 'assistant', // Default to Assistant
     onboardingStep: 1,
     userName: localStorage.getItem('ab_user_name') || 'Juan Manuel',
     deviceModel: 'Naída CI M90',
@@ -15,7 +15,29 @@ const app = {
     init() {
         this.bindEvents();
         this.checkOnboarding();
-        console.log("AB Care Hub V2.2 iPhone Optimized Initialized");
+        this.renderView('assistant');
+        this.startBridge();
+        console.log("AB Care Hub V3 WhatsApp Bridge Initialized");
+    },
+
+    startBridge() {
+        const splash = document.getElementById('bridge-splash');
+        setTimeout(() => {
+            splash.style.opacity = '0';
+            setTimeout(() => {
+                splash.style.display = 'none';
+                if (this.chatHistory.length === 0) {
+                    this.sendGreeting();
+                }
+            }, 600);
+        }, 2000);
+    },
+
+    sendGreeting() {
+        const greeting = `Hola ${this.userName}, he recibido tu transferencia desde WhatsApp. Soy Melody, tu especialista de Advance Bionics. ¿En qué puedo apoyarte con tu ${this.deviceModel} hoy?`;
+        this.addMessageToUI(greeting, 'ai');
+        this.chatHistory.push({ role: 'model', parts: [{ text: greeting }] });
+        this.saveHistory();
     },
 
     bindEvents() {
@@ -56,17 +78,9 @@ const app = {
             btn.classList.toggle('active', btn.getAttribute('data-view') === viewId);
         });
 
-        document.querySelectorAll('.view').forEach(view => {
-            view.classList.remove('active');
-        });
-
-        const targetView = document.getElementById(`view-${viewId}`);
-        if (targetView) {
-            targetView.classList.add('active');
-            if (viewId === 'assistant') this.renderHistory();
-        } else {
-            this.renderView(viewId);
-        }
+        const main = document.getElementById('main-content');
+        main.innerHTML = '';
+        this.renderView(viewId);
 
         this.currentView = viewId;
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -80,6 +94,7 @@ const app = {
 
         let content = '';
         switch(viewId) {
+            case 'home': content = this.getHomeHTML(); break;
             case 'benefits': content = this.getBenefitsHTML(); break;
             case 'care': content = this.getCareHTML(); break;
             case 'assistant': content = this.getAssistantHTML(); setTimeout(() => this.renderHistory(), 10); break;
@@ -94,91 +109,26 @@ const app = {
     getAssistantHTML() {
         return `
             <div class="header-section">
-                <h1>Melody AI Assistant</h1>
-                <p>Especialista en Advance Bionics con memoria técnica y de procesos.</p>
+                <h1>Conversación con Melody</h1>
+                <p>Transferencia segura desde WhatsApp finalizada.</p>
             </div>
-            <div class="card chat-container" style="display: flex; flex-direction: column; gap: 16px; padding: 0; overflow: hidden;">
-                <div id="chat-messages" style="flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 16px; background: #fcfcfc;">
-                    <div class="message ai">
-                        <span>Hola Juan Manuel, soy Melody, tu especialista de Advance Bionics. ¿En qué puedo apoyarte con tu Naída CI M90 hoy?</span>
-                    </div>
-                </div>
-                <div style="padding: 20px; border-top: 1px solid var(--border); display: flex; gap: 12px; align-items: center;">
-                    <button onclick="app.simulateUpload()" class="btn-icon">
+            <div class="chat-container">
+                <div id="chat-messages"></div>
+                <div class="chat-input-area">
+                    <button onclick="app.simulateUpload()" class="nav-item" style="padding: 10px; background: #f1f5f9;">
                         <i data-lucide="image"></i>
                     </button>
-                    <input type="text" id="ai-input" placeholder="Escribe tu consulta..." style="flex: 1; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border); outline: none;">
-                    <button onclick="app.sendMessage()" style="background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600;">Enviar</button>
+                    <input type="text" id="ai-input" placeholder="Escribe tu mensaje aquí..." style="flex: 1; padding: 14px; border-radius: 12px; border: 1px solid var(--border); outline: none; font-size: 1rem;">
+                    <button onclick="app.sendMessage()" style="background: var(--primary); color: white; border: none; padding: 14px 28px; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        Enviar <i data-lucide="send" style="width: 18px; height: 18px;"></i>
+                    </button>
                 </div>
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;">
+                <button class="nav-item" style="border: 1px solid var(--border); background: white; font-size: 0.85rem;" onclick="app.quickQuery('¿Cómo solicito garantía?')">📦 Solicitar Garantía (RMA)</button>
+                <button class="nav-item" style="border: 1px solid var(--border); background: white; font-size: 0.85rem;" onclick="app.quickQuery('no escucho nada')">🔇 No escucho sonidos</button>
             </div>
         `;
-    },
-
-    getCareHTML() {
-        const progress = this.updateCareProgress();
-        return `
-            <div class="header-section">
-                <h1>Cuidado del Dispositivo</h1>
-                <p>Responsabilidad diaria para una audición excelente.</p>
-            </div>
-            
-            <div class="card care-progress-card" style="margin-bottom: 24px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    <h3>Progreso de Hoy</h3>
-                    <span id="progress-percent" style="font-weight: 800; font-size: 1.2rem;">${progress}%</span>
-                </div>
-                <div class="progress-bar-container" style="background: rgba(255,255,255,0.1); height: 12px;">
-                    <div id="care-bar" class="progress-bar" style="width: ${progress}%; background: #10b981;"></div>
-                </div>
-            </div>
-
-            <div class="checklist-container">
-                ${this.renderCheckItem('tmic', 'Limpiar filtros T-Mic™', 'Garantiza que los micrófonos estén libres de cerumen.')}
-                ${this.renderCheckItem('cable', 'Revisar cable y bobina', 'Busca signos de desgaste o rotura.')}
-                ${this.renderCheckItem('dryer', 'Deshumidificador nocturno', 'Elimina la humedad acumulada durante el día.')}
-                ${this.renderCheckItem('battery', 'Verificar carga de batería', 'Asegúrate de tener energía para todo el día.')}
-            </div>
-        `;
-    },
-
-    renderCheckItem(id, title, desc) {
-        const completed = this.careState[id] ? 'completed' : '';
-        return `
-            <div class="checklist-item ${completed}" onclick="app.toggleCareTask('${id}')">
-                <div class="check-circle">
-                    <i data-lucide="check" style="width: 14px; height: 14px;"></i>
-                </div>
-                <div>
-                    <label>${title}</label>
-                    <p style="font-size: 0.8rem; color: var(--text-muted);">${desc}</p>
-                </div>
-            </div>
-        `;
-    },
-
-    toggleCareTask(taskId) {
-        this.careState[taskId] = !this.careState[taskId];
-        localStorage.setItem('ab_care_state', JSON.stringify(this.careState));
-        
-        const progress = this.updateCareProgress();
-        this.switchView('care'); // Refresh view
-        
-        if (progress === 100) {
-            this.congratulateUser();
-        }
-    },
-
-    updateCareProgress() {
-        const total = Object.keys(this.careState).length;
-        const done = Object.values(this.careState).filter(v => v).length;
-        return Math.round((done / total) * 100);
-    },
-
-    congratulateUser() {
-        const msg = "¡Felicidades Juan Manuel! Has completado todo el mantenimiento preventivo de hoy. Tu Naída CI M90 te lo agradecerá.";
-        this.chatHistory.push({ role: 'model', parts: [{ text: msg }] });
-        this.saveHistory();
-        alert(msg);
     },
 
     renderHistory() {
@@ -206,7 +156,8 @@ const app = {
             this.chatHistory.push({ role: 'model', parts: [{ text: response }] });
             this.saveHistory();
         } catch (error) {
-            this.addMessageToUI("Lo siento, estoy experimentando dificultades técnicas.", 'ai');
+            console.error(error);
+            this.addMessageToUI("Lo siento, estoy experimentando dificultades técnicas. Revisa tu conexión.", 'ai');
         }
     },
 
@@ -224,11 +175,10 @@ const app = {
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${this.apiKey}`;
         const payload = {
             system_instruction: {
-                parts: [{ text: `Eres Melody, Specialist Assistant de Advance Bionics. 
-                1. RMA/Garantía: Pide fotos y menciona el link https://forms.kommo.com/rdrvrxx.
-                2. T-Mic™: Sugiere revisar filtros.
-                3. Juan Manuel tiene un Naída CI M90.
-                4. Usa el historial para ser coherente.` }]
+                parts: [{ text: `Eres Melody, de Advance Bionics. Haz recibido al usuario de WhatsApp.
+                1. RMA/Garantía: Pide fotos y da el link https://forms.kommo.com/rdrvrxx.
+                2. Si no escucha: Check T-Mic y humedad.
+                3. Usa un tono cálido y empático.` }]
             },
             contents: this.chatHistory.slice(-10)
         };
@@ -241,12 +191,22 @@ const app = {
         return data.candidates[0].content.parts[0].text;
     },
 
-    saveHistory() { localStorage.setItem('ab_chat_history', JSON.stringify(this.chatHistory.slice(-20))); },
-    clearChat() { this.chatHistory = []; this.saveHistory(); this.switchView('assistant'); },
-    simulateUpload() { /* ... */ },
+    getHomeHTML() {
+        return `
+            <div class="header-section"><h1>Dashboard</h1><p>Bienvenido, Juan.</p></div>
+            <div class="dashboard-grid">
+                <div class="card"><h3>Garantía</h3><div style="font-size: 3rem; font-weight: 800; color: var(--primary);">730</div><p>Días restantes</p></div>
+            </div>
+        `;
+    },
 
-    getBenefitsHTML() { return `<div class="card"><h3>Premios Gold</h3><p>Puntos: 750</p></div>`; },
-    getProfileHTML() { return `<div class="card"><h3>Perfil</h3><p>Juan Manuel</p></div>`; }
+    saveHistory() { localStorage.setItem('ab_chat_history', JSON.stringify(this.chatHistory.slice(-15))); },
+    clearChat() { this.chatHistory = []; this.saveHistory(); this.switchView('assistant'); },
+    simulateUpload() { this.addMessageToUI("[Simulado] Foto subida exitosamente.", 'ai'); },
+    quickQuery(text) { const i = document.getElementById('ai-input'); if(i){ i.value=text; this.sendMessage(); } },
+    getBenefitsHTML() { return `<div class="card"><h1>Beneficios</h1><p>Nivel Gold activo.</p></div>`; },
+    getCareHTML() { return `<div class="card"><h1>Cuidado Técnico</h1><p>Sigue tu checklist.</p></div>`; },
+    getProfileHTML() { return `<div class="card"><h1>Perfil</h1><p>Sincronizado con Salesforce.</p></div>`; }
 };
 
 document.addEventListener('DOMContentLoaded', () => { app.init(); window.app = app; });

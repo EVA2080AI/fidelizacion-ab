@@ -13,6 +13,20 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
+    <!-- WhatsApp Bridge Splash Screen -->
+    <div id="bridge-splash">
+        <div class="bridge-content">
+            <div class="bridge-icons">
+                <i data-lucide="message-circle" class="wa-icon"></i>
+                <div class="bridge-line"></div>
+                <div class="logo-mark">AB</div>
+            </div>
+            <h2>Sincronizando desde WhatsApp</h2>
+            <p>Conectando con Melody, tu especialista AB...</p>
+            <div class="bridge-loader"></div>
+        </div>
+    </div>
+
     <!-- Onboarding Overlay -->
     <div id="onboarding-overlay">
         <div class="onboarding-card">
@@ -50,7 +64,7 @@
                 <span class="logo-text">Advance Bionics</span>
             </div>
             <div class="nav-links">
-                <button class="nav-item active" data-view="home">
+                <button class="nav-item" data-view="home">
                     <i data-lucide="layout-dashboard"></i>
                     <span>Dashboard</span>
                 </button>
@@ -62,7 +76,7 @@
                     <i data-lucide="activity"></i>
                     <span>Cuidado</span>
                 </button>
-                <button class="nav-item" data-view="assistant">
+                <button class="nav-item active" data-view="assistant">
                     <i data-lucide="message-square"></i>
                     <span>Asistente</span>
                 </button>
@@ -89,48 +103,12 @@
                 <div class="logo-mark">AB</div>
                 <span class="logo-text">Advance Bionics</span>
             </header>
-
-            <section id="view-home" class="view active">
-                <div class="header-section">
-                    <h1>Hola de nuevo, Juan</h1>
-                    <p>Hoy es un buen día para cuidar tu audición.</p>
-                </div>
-
-                <div class="dashboard-grid">
-                    <div class="card">
-                        <h3>Días de Garantía Restante</h3>
-                        <div class="countdown-display">
-                            <span id="days-count">730</span>
-                            <small>DÍAS</small>
-                        </div>
-                        <div class="progress-bar-container">
-                            <div class="progress-bar" style="width: 85%;"></div>
-                        </div>
-                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 16px;">
-                            <i data-lucide="calendar" style="width: 14px; vertical-align: middle;"></i>
-                            Expira el 14 de Abril, 2028
-                        </p>
-                    </div>
-
-                    <div class="card">
-                        <h3>Próxima Meta</h3>
-                        <div style="display: flex; align-items: center; gap: 20px;">
-                            <div style="background: #fef3c7; color: #d97706; padding: 16px; border-radius: 12px;">
-                                <i data-lucide="medal" style="width: 32px; height: 32px;"></i>
-                            </div>
-                            <div>
-                                <h4 style="font-size: 1.25rem; font-weight: 700;">Nivel Gold</h4>
-                                <p style="color: var(--text-muted); font-size: 0.9rem;">250 pts para Platinum</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            <!-- Views will be injected here -->
         </main>
 
         <!-- Bottom Tab Bar (Mobile) -->
         <nav class="bottom-nav mobile-only">
-            <button class="nav-item active" data-view="home">
+            <button class="nav-item" data-view="home">
                 <i data-lucide="layout-dashboard"></i>
                 <span>Inicio</span>
             </button>
@@ -142,7 +120,7 @@
                 <i data-lucide="activity"></i>
                 <span>Cuidado</span>
             </button>
-            <button class="nav-item" data-view="assistant">
+            <button class="nav-item active" data-view="assistant">
                 <i data-lucide="message-square"></i>
                 <span>Melody</span>
             </button>
@@ -151,10 +129,6 @@
                 <span>Perfil</span>
             </button>
         </nav>
-    </div>
-
-    <div class="ai-fab desktop-only" id="ai-fab" onclick="app.switchView('assistant')">
-        <i data-lucide="message-circle"></i>
     </div>
 
     <script src="app.js"></script>
