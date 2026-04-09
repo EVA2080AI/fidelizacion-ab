@@ -1,0 +1,91 @@
+/* Advance Bionics Design System Core V8 */
+:root {
+    /* Color Palette */
+    --blue-50: #f0f7ff;
+    --blue-100: #e0effe;
+    --blue-200: #bae0fd;
+    --blue-300: #7cc8fb;
+    --blue-400: #36a9f7;
+    --blue-500: #0066b2;
+    --blue-600: #0286e1;
+    --blue-700: #036aba;
+    --blue-800: #075999;
+    --blue-900: #0c4a7e;
+    
+    --slate-50: #f8fafc;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-300: #cbd5e1;
+    --slate-400: #94a3b8;
+    --slate-500: #64748b;
+    --slate-600: #475569;
+    --slate-700: #334155;
+    --slate-800: #1e293b;
+    --slate-900: #0f172a;
+
+    --primary: var(--blue-500);
+    --primary-dark: var(--blue-700);
+    --primary-light: var(--blue-100);
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+
+    /* Spacing & Scaling */
+    --radius-md: 18px;
+    --radius-lg: 32px;
+    --transition-smooth: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    --shadow-premium: 0 10px 40px -10px rgba(0, 102, 178, 0.12);
+
+    /* Animation Tokens */
+    --spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Global Reset & iPhone Comfort */
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    font-family: 'Inter', -apple-system, system-ui, sans-serif;
+    -webkit-tap-highlight-color: transparent; 
+}
+
+html, body {
+    min-height: 100dvh; /* Dynamic Viewport for iOS */
+    overflow-x: hidden;
+    background: var(--slate-100);
+    color: var(--slate-800);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+button, input, select {
+    appearance: none;
+    -webkit-appearance: none;
+    border: none;
+    background: none;
+    font: inherit;
+    color: inherit;
+    outline: none;
+}
+
+/* Glassmorphism Logic */
+.glass-effect {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.shadow-premium { box-shadow: var(--shadow-premium); }
+
+/* Animation Utils */
+@keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.98) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes hapticPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.96); }
+    100% { transform: scale(1); }
+}

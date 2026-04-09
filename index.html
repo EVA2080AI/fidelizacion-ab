@@ -6,113 +6,106 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>AB Hub Plus | Premium Care</title>
+    
+    <!-- Modular Design System V8 -->
+    <link rel="stylesheet" href="design-system.css">
+    <link rel="stylesheet" href="components.css">
     <link rel="stylesheet" href="styles.css">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-    <!-- Premium Toast Container -->
-    <div id="toast-container"></div>
+    <div id="toast-container" style="position: fixed; top: calc(20px + env(safe-area-inset-top)); right: 24px; z-index: 10000;"></div>
 
-    <!-- Login Screen V6 (Glassmorphism) -->
-    <div id="login-screen" class="overlay active">
-        <div class="login-card glass-card">
+    <!-- Login V8 -->
+    <div id="login-screen" class="overlay glass-effect shadow-premium active">
+        <div class="login-card ab-card glass-effect" style="border: none; text-align: center;">
             <div class="logo-mark" style="width: 72px; height: 72px; font-size: 1.8rem; margin: 0 auto 32px;">AB</div>
             <h1 style="font-size: 2rem; font-weight: 900; letter-spacing: -0.04em;">Advance Bionics</h1>
-            <p style="color: var(--slate-500); margin-top: 8px;">Conexión segura al Centro de Mando Plus.</p>
+            <p style="color: var(--slate-500); margin-top: 8px;">Diseñado para el futuro de la audición.</p>
             
-            <div class="form-group" style="margin-top: 40px; text-align: left;">
-                <label style="color: var(--primary); font-weight: 800; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em;">Tu Identidad</label>
-                <input type="text" id="login-name" placeholder="Nombre completo" class="form-input" style="margin-top: 8px;">
+            <div style="margin-top: 40px; text-align: left;">
+                <label style="color: var(--primary); font-weight: 800; font-size: 0.75rem; letter-spacing: 0.1em; display: block; margin-bottom: 8px;">USUARIO CLÍNICO</label>
+                <input type="text" id="login-name" placeholder="Tu nombre" class="ab-input">
             </div>
             
-            <div class="form-group" style="margin-top: 20px; text-align: left;">
-                <label style="color: var(--primary); font-weight: 800; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em;">Hardware Sincronizado</label>
-                <select id="login-device" class="form-input" style="margin-top: 8px; background: white;">
+            <div style="margin-top: 20px; text-align: left;">
+                <label style="color: var(--primary); font-weight: 800; font-size: 0.75rem; letter-spacing: 0.1em; display: block; margin-bottom: 8px;">DISPOSITIVO ASOCIADO</label>
+                <select id="login-device" class="ab-input" style="background-image: none;">
                     <option value="Naída CI M90">Naída CI M90</option>
                     <option value="Sky CI M90">Sky CI M90</option>
                     <option value="Naída CI Q90">Naída CI Q90</option>
                 </select>
             </div>
             
-            <button onclick="app.login()" class="btn-primary" style="margin-top: 40px; width: 100%;">Acceder al Hub Plus</button>
-            <p style="font-size: 0.8rem; color: var(--slate-400); margin-top: 32px; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                <i data-lucide="shield-check" style="width: 14px; height: 14px;"></i> Sistema Verificado por Salesforce
-            </p>
+            <button onclick="app.login()" class="ab-btn ab-btn-primary" style="margin-top: 40px; width: 100%;">Acceder al Hub Plus</button>
         </div>
     </div>
 
-    <!-- Sequential Overlays (WhatsApp Logic) -->
-    <div id="bridge-splash" class="overlay">
-        <div class="bridge-content glass-card" style="padding: 48px; border-radius: 24px;">
-            <div class="bridge-icons" style="margin-bottom: 32px;">
-                <i data-lucide="message-circle" class="wa-icon" style="width: 64px; height: 64px;"></i>
-                <div class="bridge-line" style="width: 60px;"></div>
-                <div class="logo-mark" style="width: 64px; height: 64px;">AB</div>
+    <!-- Bridge & Onboarding -->
+    <div id="bridge-splash" class="overlay glass-effect active" style="display: none;">
+        <div class="ab-card glass-effect" style="padding: 48px; text-align: center;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 24px; margin-bottom: 32px;">
+                <i data-lucide="message-circle" style="width: 48px; height: 48px; color: #25D366;"></i>
+                <div style="width: 40px; height: 1px; background: var(--slate-200);"></div>
+                <div class="logo-mark" style="width: 48px; height: 48px;">AB</div>
             </div>
-            <h2 style="font-weight: 900; letter-spacing: -0.02em;">Sincronizando WhatsApp...</h2>
-            <div class="bridge-loader" style="height: 6px; margin-top: 32px;"></div>
+            <h2 style="font-weight: 900;">Sincronizando...</h2>
         </div>
     </div>
 
-    <div id="onboarding-overlay" class="overlay">
-        <div class="onboarding-card glass-card">
-            <div id="onboarding-step-1" class="onboarding-content">
+    <div id="onboarding-overlay" class="overlay glass-effect">
+        <div class="onboarding-card ab-card glass-effect shadow-premium">
+            <div style="text-align: center;">
                 <div style="background: var(--blue-50); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
                     <i data-lucide="award" style="width: 40px; height: 40px; color: var(--primary);"></i>
                 </div>
-                <h2 style="font-weight: 900;">Programa de Fidelidad</h2>
-                <p style="color: var(--slate-500); margin-top: 16px;">Gana puntos por cada cuidado técnico. Desbloquea niveles Oro y Platino para beneficios exclusivos.</p>
-                <button class="btn-primary" style="width: 100%; margin-top: 32px;" onclick="app.finishOnboarding()">¡Comenzar Experiencia!</button>
+                <h2 style="font-weight: 900; margin-bottom: 16px;">Diseño de Fidelidad</h2>
+                <p style="color: var(--slate-500);">Gana puntos cuidando tu procesador y desbloquea beneficios exclusivos.</p>
+                <button class="ab-btn ab-btn-primary" style="width: 100%; margin-top: 32px;" onclick="app.finishOnboarding()">Entendido</button>
             </div>
         </div>
     </div>
 
     <div class="app-container">
-        <!-- Sidebar Navigation (Glass Design) -->
-        <nav class="main-nav desktop-only glass-card" style="border-radius: 0; box-shadow: none; border: none; border-right: 1px solid var(--border);">
+        <!-- Desktop Sidebar -->
+        <nav class="main-nav desktop-only glass-effect" style="border-radius: 0; box-shadow: none; border: none; border-right: 1px solid var(--slate-200);">
             <div class="logo-container">
                 <div class="logo-mark">AB</div>
-                <span class="logo-text">Hub Plus</span>
+                <span style="font-weight: 800; font-size: 1.1rem; color: var(--primary);">Hub Plus</span>
             </div>
             
-            <!-- Global Loyalty Card -->
-            <div class="loyalty-widget">
-                <div class="tier-badge" id="sidebar-tier">BRONCE</div>
-                <div class="points-display">
-                    <span id="sidebar-points">0</span> <small>PTS</small>
+            <div class="loyalty-widget shadow-premium">
+                <div class="ab-badge" id="sidebar-tier" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white;">BRONCE</div>
+                <div style="font-size: 1.8rem; font-weight: 900; margin-top: 12px;"><span id="sidebar-points">0</span> <small style="font-size: 0.8rem; opacity: 0.8;">PTS</small></div>
+                <div style="height: 4px; background: rgba(0,0,0,0.1); border-radius: 2px; margin-top: 16px; overflow: hidden;">
+                    <div id="loyalty-progress-fill" style="height: 100%; background: white; width: 0%; transition: width 0.5s ease;"></div>
                 </div>
-                <div class="mini-progress"><div id="loyalty-progress-fill" class="fill"></div></div>
             </div>
 
-            <div class="nav-links">
-                <button class="nav-item" data-view="home"><i data-lucide="layout-dashboard"></i><span>Entorno</span></button>
-                <button class="nav-item" data-view="benefits"><i data-lucide="award"></i><span>Fidelidad</span></button>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <button class="nav-item" data-view="home"><i data-lucide="layout-dashboard"></i><span>Panel</span></button>
+                <button class="nav-item" data-view="benefits"><i data-lucide="award"></i><span>Premios</span></button>
                 <button class="nav-item" data-view="care"><i data-lucide="activity"></i><span>Técnico</span></button>
                 <button class="nav-item active" data-view="assistant"><i data-lucide="message-square"></i><span>Melody</span></button>
-                <button class="nav-item" data-view="profile"><i data-lucide="user"></i><span>Percepción</span></button>
-            </div>
-            
-            <div class="nav-footer" style="margin-top: auto;">
-                <button class="nav-item" style="color: var(--danger); border: 1px solid var(--slate-100);" onclick="app.logout()">
-                    <i data-lucide="power"></i><span>Desconectar</span>
-                </button>
+                <button class="nav-item" data-view="profile"><i data-lucide="user"></i><span>Perfil</span></button>
             </div>
         </nav>
 
         <!-- Main Workspace -->
         <main id="main-content">
-            <header class="mobile-header glass-card" style="border-radius: 0; border: none; border-bottom: 1px solid var(--border);">
+            <header class="mobile-header glass-effect mobile-only shadow-premium" style="border: none; border-bottom: 1px solid var(--slate-100);">
                 <div class="logo-mark" style="width: 32px; height: 32px; font-size: 0.8rem;">AB</div>
-                <div class="tier-badge" id="mobile-tier" style="margin-bottom: 0;">BRONCE</div>
+                <div class="ab-badge success" id="mobile-tier">BRONCE</div>
             </header>
-            <!-- Content injected here -->
+            <!-- Content -->
         </main>
 
-        <!-- Bottom Nav (iPhone Style) -->
-        <nav class="bottom-nav mobile-only glass-card" style="border-radius: 0; border: none; border-top: 1px solid var(--border);">
+        <!-- iPhone Pro Floating Nav -->
+        <nav class="bottom-nav mobile-only glass-effect shadow-premium">
             <button class="nav-item" data-view="home"><i data-lucide="layout-dashboard"></i></button>
             <button class="nav-item" data-view="benefits"><i data-lucide="award"></i></button>
             <button class="nav-item" data-view="care"><i data-lucide="activity"></i></button>

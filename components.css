@@ -1,0 +1,65 @@
+/* AB UI Component Library V8 */
+
+/* Standardized Card */
+.ab-card {
+    background: white;
+    border-radius: var(--radius-md);
+    padding: 24px;
+    border: 1px solid var(--slate-200);
+    transition: var(--transition-smooth);
+}
+.ab-card:active { animation: hapticPulse 0.2s ease-out; }
+
+/* Buttons & Haptics */
+.ab-btn {
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    padding: 14px 28px;
+    border-radius: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+.ab-btn-primary { 
+    background: var(--primary); color: white; 
+    box-shadow: 0 4px 15px rgba(0, 102, 178, 0.2); 
+}
+.ab-btn:active { transform: scale(0.96); }
+
+/* Inputs */
+.ab-input {
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    border: 2px solid var(--slate-200);
+    background: white;
+    transition: border-color 0.2s;
+}
+.ab-input:focus { border-color: var(--primary); }
+
+/* Badges & Status */
+.ab-badge {
+    padding: 6px 14px; border-radius: 99px; 
+    font-size: 0.7rem; font-weight: 800;
+    text-transform: uppercase;
+}
+.ab-badge.success { background: #d1fae5; color: #065f46; }
+.ab-badge.caution { background: #fef3c7; color: #92400e; }
+
+/* Toast Engine Styles */
+.ab-toast {
+    background: var(--slate-900); color: white; 
+    padding: 16px 24px; border-radius: 14px;
+    display: flex; align-items: center; gap: 12px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    margin-bottom: 8px;
+}
+
+/* Checklist V8 */
+.checklist-item {
+    background: white; padding: 20px; border-radius: 16px; 
+    border: 2px solid transparent; cursor: pointer;
+    transition: var(--transition-smooth);
+}
+.checklist-item:active { transform: scale(0.98); }
+.checklist-item.completed { border-color: var(--success); background: #f0fdf4; }
