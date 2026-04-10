@@ -1,45 +1,79 @@
-/* V22: Clinical Charts & Warranty Sentinel UI Kit */
+/* 🏛️ V23: Surgical Precision Masterclass Components */
 
-/* --- Warranty Sentinel Card (Patient High-Visibility) --- */
-.warranty-sentinel-card {
-    padding: 32px; border-radius: var(--radius-lg);
-    background: white; border: 1px solid var(--slate-100);
-    box-shadow: var(--shadow-premium);
-    transition: var(--transition-smooth);
+/* --- Physical Master Buttons --- */
+.ab-btn {
     position: relative; overflow: hidden;
-}
-.warranty-sentinel-card.danger {
-    background: var(--danger); border-color: var(--danger);
-    color: white; transform: scale(1.02);
-}
-.warranty-sentinel-card.danger h1, .warranty-sentinel-card.danger p, .warranty-sentinel-card.danger b { color: white; }
-
-.warranty-bar {
-    width: 100%; height: 8px; background: var(--slate-100);
-    border-radius: 4px; overflow: hidden;
-}
-.warranty-progress {
-    height: 100%; height: 100%; 
-    background: var(--primary); transition: width 1s var(--spring);
+    padding: 12px 28px; border-radius: 8px;
+    font-size: 0.8rem; font-weight: 800; letter-spacing: 0.08em;
+    text-transform: uppercase; border: none; cursor: pointer;
+    transition: var(--transition-cinematic);
 }
 
-/* --- Mini Warranty Indicator (Lists) --- */
-.ab-badge {
-    padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 800;
-    text-transform: uppercase; letter-spacing: 0.05em;
+.ab-btn::after {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+    opacity: 0; transform: scale(0); transition: transform 0.6s var(--spring), opacity 0.4s;
 }
-.ab-badge.success { background: var(--success); color: white; }
-.ab-badge.warning { background: var(--warning); color: white; }
-.ab-badge.danger { background: var(--danger); color: white; }
+.ab-btn:active::after { transform: scale(3); opacity: 1; transition: 0s; }
 
-/* --- Clinical Progress Meter --- */
-.warranty-sentinel-mini {
-    padding: 20px; border-radius: var(--radius-md);
-    background: var(--slate-50); border: 1px solid var(--slate-100);
+.ab-btn-primary {
+    background: var(--primary); color: white;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.1), 0 10px 20px -5px rgba(0, 163, 218, 0.3);
 }
-.warranty-sentinel-mini.danger {
-    background: var(--danger-bg); border-color: var(--danger);
+.ab-btn-primary:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 0 0 1px var(--primary), 0 20px 40px -10px rgba(0, 163, 218, 0.5);
 }
 
-/* --- Animation tweaks --- */
-.animate-pop { animation: viewFadeIn 0.4s var(--spring) forwards; }
+/* --- Precision Toggles (Physical Slider Style) --- */
+.ab-switch { display: inline-flex; align-items: center; cursor: pointer; }
+.switch-track {
+    width: 50px; height: 26px; border-radius: 13px;
+    background: var(--slate-200); position: relative;
+    transition: var(--transition-cinematic);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+}
+.switch-knob {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: white; position: absolute; top: 3px; left: 3px;
+    transition: var(--transition-cinematic);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15), inset 0 0 0 1px rgba(0,0,0,0.02);
+}
+input:checked + .switch-track { background: var(--primary); }
+input:checked + .switch-track .switch-knob { left: 27px; transform: scale(1.1); }
+
+/* --- Cinematic Modal V3 (Scale-and-Blur) --- */
+.ab-modal {
+    background: white; border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    box-shadow: inset 0 0 0 1px var(--diamond-edge), var(--shadow-premium);
+    animation: modalCinematic 0.8s var(--haptic-ease) forwards;
+}
+@keyframes modalCinematic {
+    from { opacity: 0; transform: scale(0.95) translateY(30px); filter: blur(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+}
+
+/* --- Dashboard High-Density (Glass V3) --- */
+.ab-card {
+    background: white; border-radius: 16px;
+    padding: 24px; transition: var(--transition-cinematic);
+    border: 1px solid var(--slate-100);
+}
+.ab-card:hover { 
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: 0 30px 60px -15px rgba(0,0,0,0.1);
+    background: white; 
+}
+
+/* --- Clinical Signal (Glow Pulse) --- */
+.ab-status-glow {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--success);
+    position: relative;
+}
+.ab-status-glow::before {
+    content: ''; position: absolute; inset: -4px;
+    border-radius: 50%; border: 2px solid var(--success);
+    animation: signalPulse 2s infinite;
+}
