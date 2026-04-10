@@ -13,8 +13,14 @@ AB.DB = {
         this.useSupabase = AB.Supabase && AB.Supabase.isConfigured;
 
         if (!this.useSupabase) {
-            // localStorage fallback mode
-            if (!this.get('initialized')) {
+            // Force re-seed if data version changed (fixes flag encoding, etc.)
+            const DATA_VERSION = 2;
+            if (this.get('data_version') !== DATA_VERSION) {
+                this.clearAll();
+                this.seedData();
+                this.set('data_version', DATA_VERSION);
+                this.set('initialized', true);
+            } else if (!this.get('initialized')) {
                 this.seedData();
                 this.set('initialized', true);
             }
@@ -100,12 +106,12 @@ AB.DB = {
     seedData() {
         // Countries
         this.set('countries', [
-            { code: 'COL', name: 'Colombia', currency: 'COP', flag: '\ud83c\udde8\ud83c\uddf4', phone_prefix: '+57' },
-            { code: 'MEX', name: 'Mexico', currency: 'MXN', flag: '\ud83c\uddf2\ud83c\uddfd', phone_prefix: '+52' },
-            { code: 'ARG', name: 'Argentina', currency: 'ARS', flag: '\ud83c\udde6\ud83c\uddf7', phone_prefix: '+54' },
-            { code: 'CRI', name: 'Costa Rica', currency: 'CRC', flag: '\ud83c\udde8\ud83c\uddf7', phone_prefix: '+506' },
-            { code: 'CHL', name: 'Chile', currency: 'CLP', flag: '\ud83c\udde8\ud83c\uddf1', phone_prefix: '+56' },
-            { code: 'PER', name: 'Peru', currency: 'PEN', flag: '\ud83c\uddf5\ud83c\uddea', phone_prefix: '+51' }
+            { code: 'COL', name: 'Colombia', currency: 'COP', flag: '🇨🇴', phone_prefix: '+57' },
+            { code: 'MEX', name: 'Mexico', currency: 'MXN', flag: '🇲🇽', phone_prefix: '+52' },
+            { code: 'ARG', name: 'Argentina', currency: 'ARS', flag: '🇦🇷', phone_prefix: '+54' },
+            { code: 'CRI', name: 'Costa Rica', currency: 'CRC', flag: '🇨🇷', phone_prefix: '+506' },
+            { code: 'CHL', name: 'Chile', currency: 'CLP', flag: '🇨🇱', phone_prefix: '+56' },
+            { code: 'PER', name: 'Peru', currency: 'PEN', flag: '🇵🇪', phone_prefix: '+51' }
         ]);
 
         // Products

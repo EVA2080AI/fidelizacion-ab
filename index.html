@@ -23,113 +23,144 @@
     <!-- Toast Container -->
     <div id="toast-container"></div>
 
-    <!-- ============ LOGIN ============ -->
+    <!-- ============ LOGIN (Split-Pane) ============ -->
     <div id="login-overlay" class="login-overlay active">
-        <div class="login-card">
-            <div class="login-logo">
-                <div class="logo-icon">AB</div>
-                <div class="logo-text">
-                    Advanced Bionics
-                    <span>HUB+ Fidelizacion</span>
-                </div>
-            </div>
-
-            <h2 class="login-title">Bienvenido</h2>
-            <p class="login-subtitle">Selecciona tu pais y accede al sistema</p>
-
-            <input type="hidden" id="selected-country" value="">
-
-            <!-- Step 1: Country Selection -->
-            <div class="form-group" style="margin-bottom:var(--sp-6);">
-                <label class="form-label">Tu pais</label>
-                <div class="country-grid">
-                    <div class="country-option" data-country="COL" onclick="AB.App.selectCountry('COL')">
-                        <span class="country-flag">\ud83c\udde8\ud83c\uddf4</span>
-                        <span class="country-name">Colombia</span>
-                    </div>
-                    <div class="country-option" data-country="MEX" onclick="AB.App.selectCountry('MEX')">
-                        <span class="country-flag">\ud83c\uddf2\ud83c\uddfd</span>
-                        <span class="country-name">Mexico</span>
-                    </div>
-                    <div class="country-option" data-country="ARG" onclick="AB.App.selectCountry('ARG')">
-                        <span class="country-flag">\ud83c\udde6\ud83c\uddf7</span>
-                        <span class="country-name">Argentina</span>
-                    </div>
-                    <div class="country-option" data-country="CRI" onclick="AB.App.selectCountry('CRI')">
-                        <span class="country-flag">\ud83c\udde8\ud83c\uddf7</span>
-                        <span class="country-name">Costa Rica</span>
-                    </div>
-                    <div class="country-option" data-country="CHL" onclick="AB.App.selectCountry('CHL')">
-                        <span class="country-flag">\ud83c\udde8\ud83c\uddf1</span>
-                        <span class="country-name">Chile</span>
-                    </div>
-                    <div class="country-option" data-country="PER" onclick="AB.App.selectCountry('PER')">
-                        <span class="country-flag">\ud83c\uddf5\ud83c\uddea</span>
-                        <span class="country-name">Peru</span>
+        <div class="login-split">
+            <!-- Left: Hero Image -->
+            <div class="login-hero">
+                <img src="login-hero.png" alt="Advanced Bionics" class="login-hero-img">
+                <div class="login-hero-overlay">
+                    <div class="login-hero-content">
+                        <div class="login-hero-badge">AB HUB+</div>
+                        <h2 class="login-hero-title">Liderando el futuro de la audicion</h2>
+                        <p class="login-hero-text">Plataforma integral de fidelizacion, soporte y gestion para dispositivos Advanced Bionics.</p>
+                        <div class="login-hero-stats">
+                            <div class="login-hero-stat">
+                                <span class="login-hero-stat-value">6</span>
+                                <span class="login-hero-stat-label">Paises</span>
+                            </div>
+                            <div class="login-hero-stat">
+                                <span class="login-hero-stat-value">24/7</span>
+                                <span class="login-hero-stat-label">Soporte IA</span>
+                            </div>
+                            <div class="login-hero-stat">
+                                <span class="login-hero-stat-value">100%</span>
+                                <span class="login-hero-stat-label">Cobertura</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Step 2: Credentials (shown after country selection) -->
-            <div id="login-step-2" style="display:none;">
-                <!-- Supabase mode: email + password -->
-                <div id="supabase-auth-fields" style="display:none;">
-                    <div class="form-group" style="margin-bottom:var(--sp-4);">
-                        <label class="form-label">Nombre completo</label>
-                        <input type="text" id="login-name-sb" class="form-input" placeholder="Tu nombre completo">
+            <!-- Right: Form -->
+            <div class="login-form-side">
+                <div class="login-form-inner">
+                    <div class="login-logo">
+                        <div class="logo-icon">AB</div>
+                        <div class="logo-text">
+                            Advanced Bionics
+                            <span>HUB+ Fidelizacion</span>
+                        </div>
                     </div>
-                    <div class="form-group" style="margin-bottom:var(--sp-4);">
-                        <label class="form-label">Email</label>
-                        <input type="email" id="login-email" class="form-input" placeholder="tu@email.com">
-                    </div>
-                    <div class="form-group" style="margin-bottom:var(--sp-4);">
-                        <label class="form-label">Contrasena</label>
-                        <input type="password" id="login-password" class="form-input" placeholder="Minimo 6 caracteres">
-                    </div>
-                    <div class="form-group" style="margin-bottom:var(--sp-6);">
-                        <label class="form-label">Rol de acceso</label>
-                        <select id="login-role-sb" class="form-select">
-                            <option value="cliente">Cliente / Paciente</option>
-                            <option value="especialista">Especialista / Audiologo</option>
-                            <option value="distribuidor">Distribuidor</option>
-                            <option value="admin">Administrador</option>
-                            <option value="superadmin">Super Administrador</option>
-                        </select>
-                    </div>
-                    <button class="btn btn-primary btn-block btn-lg login-btn" onclick="AB.App.supabaseSignUp()">
-                        Crear Cuenta
-                    </button>
-                    <p class="text-center text-sm text-muted" style="margin-top:var(--sp-4);">
-                        Ya tienes cuenta? <a href="#" onclick="AB.App.toggleAuthMode()" id="auth-toggle-link">Iniciar sesion</a>
-                    </p>
-                </div>
 
-                <!-- Demo mode: just name -->
-                <div id="demo-auth-fields">
-                    <div class="form-group" style="margin-bottom:var(--sp-4);">
-                        <label class="form-label">Nombre completo</label>
-                        <input type="text" id="login-name" class="form-input" placeholder="Tu nombre completo">
+                    <h2 class="login-title">Bienvenido</h2>
+                    <p class="login-subtitle">Selecciona tu pais para comenzar</p>
+
+                    <input type="hidden" id="selected-country" value="">
+
+                    <!-- Step 1: Country Selection -->
+                    <div id="login-step-1">
+                        <label class="form-label" style="margin-bottom:var(--sp-3);">Tu pais</label>
+                        <div class="country-grid">
+                            <div class="country-option" data-country="COL" onclick="AB.App.selectCountry('COL')">
+                                <span class="country-flag">&#x1F1E8;&#x1F1F4;</span>
+                                <span class="country-name">Colombia</span>
+                            </div>
+                            <div class="country-option" data-country="MEX" onclick="AB.App.selectCountry('MEX')">
+                                <span class="country-flag">&#x1F1F2;&#x1F1FD;</span>
+                                <span class="country-name">Mexico</span>
+                            </div>
+                            <div class="country-option" data-country="ARG" onclick="AB.App.selectCountry('ARG')">
+                                <span class="country-flag">&#x1F1E6;&#x1F1F7;</span>
+                                <span class="country-name">Argentina</span>
+                            </div>
+                            <div class="country-option" data-country="CRI" onclick="AB.App.selectCountry('CRI')">
+                                <span class="country-flag">&#x1F1E8;&#x1F1F7;</span>
+                                <span class="country-name">Costa Rica</span>
+                            </div>
+                            <div class="country-option" data-country="CHL" onclick="AB.App.selectCountry('CHL')">
+                                <span class="country-flag">&#x1F1E8;&#x1F1F1;</span>
+                                <span class="country-name">Chile</span>
+                            </div>
+                            <div class="country-option" data-country="PER" onclick="AB.App.selectCountry('PER')">
+                                <span class="country-flag">&#x1F1F5;&#x1F1EA;</span>
+                                <span class="country-name">Peru</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group" style="margin-bottom:var(--sp-6);">
-                        <label class="form-label">Rol de acceso</label>
-                        <select id="login-role" class="form-select">
-                            <option value="cliente">Cliente / Paciente</option>
-                            <option value="especialista">Especialista / Audiologo</option>
-                            <option value="distribuidor">Distribuidor</option>
-                            <option value="admin">Administrador</option>
-                            <option value="superadmin">Super Administrador</option>
-                        </select>
+
+                    <!-- Step 2: Credentials (shown after country) -->
+                    <div id="login-step-2" style="display:none;">
+                        <!-- Back button -->
+                        <button class="btn btn-sm btn-secondary" style="margin-bottom:var(--sp-5);" onclick="document.getElementById('login-step-1').style.display='block'; document.getElementById('login-step-2').style.display='none'; document.getElementById('selected-country').value=''; document.querySelectorAll('.country-option').forEach(e=>e.classList.remove('selected'));">
+                            <i data-lucide="arrow-left" style="width:14px; height:14px;"></i> Cambiar pais
+                        </button>
+
+                        <!-- Supabase mode -->
+                        <div id="supabase-auth-fields" style="display:none;">
+                            <div class="form-group" style="margin-bottom:var(--sp-4);">
+                                <label class="form-label">Nombre completo</label>
+                                <input type="text" id="login-name-sb" class="form-input" placeholder="Tu nombre completo">
+                            </div>
+                            <div class="form-group" style="margin-bottom:var(--sp-4);">
+                                <label class="form-label">Email</label>
+                                <input type="email" id="login-email" class="form-input" placeholder="tu@email.com">
+                            </div>
+                            <div class="form-group" style="margin-bottom:var(--sp-4);">
+                                <label class="form-label">Contrasena</label>
+                                <input type="password" id="login-password" class="form-input" placeholder="Minimo 6 caracteres">
+                            </div>
+                            <div class="form-group" style="margin-bottom:var(--sp-6);">
+                                <label class="form-label">Rol de acceso</label>
+                                <select id="login-role-sb" class="form-select">
+                                    <option value="cliente">Cliente / Paciente</option>
+                                    <option value="especialista">Especialista / Audiologo</option>
+                                    <option value="distribuidor">Distribuidor</option>
+                                    <option value="admin">Administrador</option>
+                                    <option value="superadmin">Super Administrador</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary btn-block btn-lg login-btn" onclick="AB.App.supabaseSignUp()">Crear Cuenta</button>
+                            <p class="text-center text-sm text-muted" style="margin-top:var(--sp-4);">
+                                Ya tienes cuenta? <a href="#" onclick="AB.App.toggleAuthMode()" id="auth-toggle-link">Iniciar sesion</a>
+                            </p>
+                        </div>
+
+                        <!-- Demo mode -->
+                        <div id="demo-auth-fields">
+                            <div class="form-group" style="margin-bottom:var(--sp-4);">
+                                <label class="form-label">Nombre completo</label>
+                                <input type="text" id="login-name" class="form-input" placeholder="Tu nombre completo">
+                            </div>
+                            <div class="form-group" style="margin-bottom:var(--sp-6);">
+                                <label class="form-label">Rol de acceso</label>
+                                <select id="login-role" class="form-select">
+                                    <option value="cliente">Cliente / Paciente</option>
+                                    <option value="especialista">Especialista / Audiologo</option>
+                                    <option value="distribuidor">Distribuidor</option>
+                                    <option value="admin">Administrador</option>
+                                    <option value="superadmin">Super Administrador</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary btn-block btn-lg login-btn" onclick="AB.App.login()">
+                                Iniciar Sesion
+                            </button>
+                        </div>
                     </div>
-                    <button class="btn btn-primary btn-block btn-lg login-btn" onclick="AB.App.login()">
-                        Iniciar Sesion
-                    </button>
-                    <p class="text-center text-xs text-muted" style="margin-top:var(--sp-4);">Modo demo &mdash; sin autenticacion real</p>
+
+                    <p class="login-footer">&copy; 2026 Advanced Bionics AG &mdash; A Sonova Brand</p>
                 </div>
             </div>
-
-            <p style="text-align:center; margin-top:var(--sp-8); font-size:0.6875rem; color:var(--gray-400);">
-                &copy; 2026 Advanced Bionics AG &mdash; A Sonova Brand
-            </p>
         </div>
     </div>
 

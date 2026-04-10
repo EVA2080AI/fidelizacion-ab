@@ -509,7 +509,10 @@ AB.App = {
             el.classList.toggle('selected', el.dataset.country === code);
         });
         document.getElementById('selected-country').value = code;
+        // Hide country grid, show credentials
+        document.getElementById('login-step-1').style.display = 'none';
         document.getElementById('login-step-2').style.display = 'block';
+        if (window.lucide) lucide.createIcons();
     },
 
     login() {
