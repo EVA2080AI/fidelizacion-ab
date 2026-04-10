@@ -2,137 +2,202 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>AB Command Center | Enterprise</title>
-    
-    <link rel="stylesheet" href="design-system.css">
-    <link rel="stylesheet" href="components.css">
-    <link rel="stylesheet" href="styles.css">
-    
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#0066B2">
+    <title>AB HUB+ | Advanced Bionics</title>
+
+    <link rel="stylesheet" href="css/styles.css">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="enterprise-layout">
+<body>
+
+    <!-- Toast Container -->
     <div id="toast-container"></div>
 
-    <!-- Login V13 (Split-Pane Enterprise) -->
-    <div id="login-screen" class="overlay active">
-        <div class="split-login-container glass-effect shadow-premium">
-            <!-- Left: Form -->
-            <div class="login-side-form">
-                <div class="logo-mark" style="width: 56px; height: 56px; font-size: 1.2rem; margin-bottom: 24px;">AB</div>
-                <h1 style="font-size: 2.2rem; font-weight: 900; line-height: 1.1; letter-spacing: -0.04em;">Command<br>Center</h1>
-                <p style="color: var(--slate-500); margin-top: 12px; font-size: 0.95rem;">Acceso seguro al ecosistema global de Advance Bionics.</p>
-                
-                <div style="margin-top: 40px; text-align: left;">
-                    <label class="field-label">NOMBRE COMPLETO</label>
-                    <input type="text" id="login-name" placeholder="Tu nombre" class="ab-input" style="background: white; border: 1px solid var(--slate-200);">
+    <!-- ============ LOGIN ============ -->
+    <div id="login-overlay" class="login-overlay active">
+        <div class="login-card">
+            <div class="login-logo">
+                <div class="logo-icon">AB</div>
+                <div class="logo-text">
+                    Advanced Bionics
+                    <span>HUB+ Fidelizacion</span>
                 </div>
+            </div>
 
-                <div style="margin-top: 20px; text-align: left; display: grid; grid-template-columns: 1fr; gap: 20px;">
-                    <div>
-                        <label class="field-label">ROL DE ACCESO</label>
-                        <select id="login-role" class="ab-input" style="background: white; border: 1px solid var(--slate-200);">
-                            <option value="CLIENTE">Paciente</option>
-                            <option value="ESPECIALISTA">Especialista</option>
-                            <option value="DISTRIBUIDOR">Distribuidor</option>
-                            <option value="ADMIN">Meta Usuario</option>
-                        </select>
+            <h2 class="login-title">Bienvenido</h2>
+            <p class="login-subtitle">Selecciona tu pais y accede al sistema</p>
+
+            <input type="hidden" id="selected-country" value="">
+
+            <!-- Step 1: Country Selection -->
+            <div class="form-group" style="margin-bottom:var(--sp-6);">
+                <label class="form-label">Tu pais</label>
+                <div class="country-grid">
+                    <div class="country-option" data-country="COL" onclick="AB.App.selectCountry('COL')">
+                        <span class="country-flag">\ud83c\udde8\ud83c\uddf4</span>
+                        <span class="country-name">Colombia</span>
                     </div>
-                    <div>
-                        <label class="field-label">REGIÓN OPERATIVA</label>
-                        <select id="login-country" class="ab-input" style="background: white; border: 1px solid var(--slate-200);">
-                            <option value="COL">Colombia 🇨🇴</option>
-                            <option value="MEX">México 🇲🇽</option>
-                            <option value="ARG">Argentina 🇦🇷</option>
-                            <option value="CRI">Costa Rica 🇨🇷</option>
-                        </select>
+                    <div class="country-option" data-country="MEX" onclick="AB.App.selectCountry('MEX')">
+                        <span class="country-flag">\ud83c\uddf2\ud83c\uddfd</span>
+                        <span class="country-name">Mexico</span>
+                    </div>
+                    <div class="country-option" data-country="ARG" onclick="AB.App.selectCountry('ARG')">
+                        <span class="country-flag">\ud83c\udde6\ud83c\uddf7</span>
+                        <span class="country-name">Argentina</span>
+                    </div>
+                    <div class="country-option" data-country="CRI" onclick="AB.App.selectCountry('CRI')">
+                        <span class="country-flag">\ud83c\udde8\ud83c\uddf7</span>
+                        <span class="country-name">Costa Rica</span>
+                    </div>
+                    <div class="country-option" data-country="CHL" onclick="AB.App.selectCountry('CHL')">
+                        <span class="country-flag">\ud83c\udde8\ud83c\uddf1</span>
+                        <span class="country-name">Chile</span>
+                    </div>
+                    <div class="country-option" data-country="PER" onclick="AB.App.selectCountry('PER')">
+                        <span class="country-flag">\ud83c\uddf5\ud83c\uddea</span>
+                        <span class="country-name">Peru</span>
                     </div>
                 </div>
-                
-                <button onclick="app.login()" class="ab-btn ab-btn-primary" style="margin-top: 40px; width: 100%; padding: 16px;">Iniciar Sesión Segura</button>
-                <p style="text-align: center; margin-top: 32px; font-size: 0.75rem; color: var(--slate-400); font-weight: 600;">© 2026 ADVANCE BIONICS CORPORATE</p>
             </div>
-            
-            <!-- Right: Branding -->
-            <div class="login-side-hero desktop-only">
-                <div class="hero-overlay">
-                    <div class="ab-badge success" style="margin-bottom: 12px;">VERSION 13.0</div>
-                    <h2 style="color: white; font-size: 1.5rem; font-weight: 800;">Liderando el futuro de la audición clínica.</h2>
+
+            <!-- Step 2: Credentials (shown after country selection) -->
+            <div id="login-step-2" style="display:none;">
+                <div class="form-group" style="margin-bottom:var(--sp-4);">
+                    <label class="form-label">Nombre completo</label>
+                    <input type="text" id="login-name" class="form-input" placeholder="Tu nombre completo">
                 </div>
+                <div class="form-group" style="margin-bottom:var(--sp-6);">
+                    <label class="form-label">Rol de acceso</label>
+                    <select id="login-role" class="form-select">
+                        <option value="cliente">Cliente / Paciente</option>
+                        <option value="especialista">Especialista / Audiologo</option>
+                        <option value="distribuidor">Distribuidor</option>
+                        <option value="admin">Administrador</option>
+                        <option value="superadmin">Super Administrador</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary btn-block btn-lg login-btn" onclick="AB.App.login()">
+                    Iniciar Sesion
+                </button>
             </div>
+
+            <p style="text-align:center; margin-top:var(--sp-8); font-size:0.6875rem; color:var(--gray-400);">
+                &copy; 2026 Advanced Bionics AG &mdash; A Sonova Brand
+            </p>
         </div>
     </div>
 
-    <!-- Global Modal V18 -->
-    <div id="global-modal" class="overlay">
-        <div class="ab-modal glass-effect shadow-premium">
+    <!-- ============ MODAL ============ -->
+    <div id="modal-overlay" class="modal-overlay">
+        <div class="modal">
             <div class="modal-header">
                 <h3 id="modal-title">Detalle</h3>
-                <button onclick="app.closeModal()" class="ab-btn" style="padding:4px;"><i data-lucide="x"></i></button>
+                <button class="btn-icon" onclick="AB.App.closeModal()">
+                    <i data-lucide="x" style="width:20px; height:20px;"></i>
+                </button>
             </div>
-            <hr style="border:none; border-top:1px solid var(--bg-light); margin:0;">
-            <div id="modal-body" class="modal-content"></div>
+            <div class="modal-body" id="modal-body"></div>
         </div>
     </div>
 
-    <!-- PWA / App Shell -->
-    <div class="app-shell" style="display: none;">
-        <!-- Persistent Side Chat (Desktop) -->
-        <aside id="app-sidebar" class="chat-sidebar glass-effect">
+    <!-- ============ APP SHELL ============ -->
+    <div id="app-shell" class="app-shell">
+
+        <!-- AI Chat Sidebar (Left) -->
+        <aside id="chat-sidebar" class="chat-sidebar">
             <div class="sidebar-header">
-                <div class="status-dot"></div>
-                <span style="font-weight: 800; font-size: 0.9rem;">MELODY CLÍNICA</span>
-                <button class="mobile-only ab-btn" style="color:white; margin-left:auto;" onclick="app.toggleSidebar()"><i data-lucide="chevron-left"></i></button>
+                <div class="sidebar-brand">
+                    <div class="brand-icon"><i data-lucide="bot"></i></div>
+                    <div>
+                        <div class="brand-name">Melody AI</div>
+                        <div class="brand-status"><span class="status-dot"></span> En linea</div>
+                    </div>
+                </div>
+                <button class="btn-icon" style="color:rgba(255,255,255,0.6);" onclick="AB.App.toggleSidebar()">
+                    <i data-lucide="panel-left-close" style="width:18px; height:18px;"></i>
+                </button>
             </div>
-            <div id="sidebar-chat-messages" class="chat-messages-container"></div>
-            <div class="chat-input-row">
-                <input type="text" id="sidebar-ai-input" placeholder="Consultar sistema..." onkeypress="if(event.key==='Enter')app.sendMessageSidebar()">
-                <button onclick="app.sendMessageSidebar()" class="send-btn"><i data-lucide="send"></i></button>
+
+            <div id="chat-quick-actions" class="chat-quick-actions"></div>
+            <div id="chat-messages" class="chat-messages"></div>
+
+            <div id="chat-typing" class="chat-typing">
+                <div class="typing-dots"><span></span><span></span><span></span></div>
+                <span>Melody esta escribiendo...</span>
+            </div>
+
+            <div class="chat-input-area">
+                <div class="chat-input-row">
+                    <input type="text" id="chat-input" class="chat-input" placeholder="Pregunta a Melody..."
+                           onkeypress="if(event.key==='Enter')AB.App.sendChatMessage()">
+                    <button class="chat-send-btn" onclick="AB.App.sendChatMessage()">
+                        <i data-lucide="send"></i>
+                    </button>
+                </div>
             </div>
         </aside>
 
-        <!-- Main Workspace Area -->
-        <div class="main-workspace">
-            <!-- Global Top Nav -->
-            <header class="global-header glass-effect">
+        <!-- Sidebar Backdrop (mobile) -->
+        <div id="sidebar-backdrop" class="sidebar-backdrop" onclick="AB.App.toggleSidebar()"></div>
+
+        <!-- Main Area -->
+        <div class="main-area">
+
+            <!-- Top Header -->
+            <header class="top-header">
                 <div class="header-left">
-                    <button class="mobile-only ab-btn" style="margin-right:12px; padding:8px;" onclick="app.toggleSidebar()"><i data-lucide="menu"></i></button>
-                    <div class="logo-mark" style="width: 32px; height: 32px; font-size: 0.8rem;">AB</div>
-                    <div class="country-badge" id="current-country-badge">COL</div>
-                    <div class="role-badge" id="current-role-badge">CLIENTE</div>
+                    <button class="btn-icon menu-toggle" onclick="AB.App.toggleSidebar()">
+                        <i data-lucide="menu" style="width:20px; height:20px;"></i>
+                    </button>
+                    <div class="header-breadcrumb" id="breadcrumb">
+                        <span class="breadcrumb-item current">Inicio</span>
+                    </div>
                 </div>
                 <div class="header-right">
-                    <div class="header-user" onclick="app.switchView('profile')">
-                        <span id="header-user-name">Usuario</span>
-                        <div class="user-avatar">?</div>
+                    <span class="text-sm text-muted" id="header-country"></span>
+                    <div class="header-user" onclick="AB.Router.navigate('profile')">
+                        <div class="header-user-info">
+                            <div class="header-user-name" id="header-user-name">Usuario</div>
+                            <div class="header-user-role" id="header-user-role">Rol</div>
+                        </div>
+                        <div class="user-avatar" id="header-avatar">?</div>
                     </div>
                 </div>
             </header>
 
-            <main id="main-content">
-                <!-- Content injected here via renderRoleView() -->
-            </main>
+            <!-- Content Wrapper: Side Nav + Content -->
+            <div class="content-wrapper">
+                <nav class="side-nav" id="side-nav"></nav>
+                <main class="content-body" id="main-content">
+                    <!-- Dynamic content rendered here -->
+                </main>
+            </div>
 
             <!-- Bottom Nav (Mobile) -->
-            <nav class="bottom-nav mobile-only glass-effect">
-                <button class="nav-item" data-view="home"><i data-lucide="layout-dashboard"></i></button>
-                <button class="nav-item" data-view="chat"><i data-lucide="message-square"></i></button>
-                <button class="nav-item" data-view="maintenance"><i data-lucide="settings-2"></i></button>
-                <button class="nav-item" data-view="profile"><i data-lucide="user"></i></button>
-            </nav>
+            <nav class="bottom-nav" id="bottom-nav"></nav>
         </div>
     </div>
 
-    <script src="app.js"></script>
-    <script>lucide.createIcons();</script>
+    <!-- Scripts: Load order matters -->
+    <script src="js/db.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/views/shared.js"></script>
+    <script src="js/views/cliente.js"></script>
+    <script src="js/views/especialista.js"></script>
+    <script src="js/views/distribuidor.js"></script>
+    <script src="js/views/admin.js"></script>
+    <script src="js/views/superadmin.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
