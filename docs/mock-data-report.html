@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>AB HUB+ Mock Data Report</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', system-ui, sans-serif; color: #1E293B; font-size: 11px; line-height: 1.5; padding: 40px; background: #fff; }
+
+        @page { size: A4; margin: 20mm; }
+        @media print {
+            body { padding: 0; }
+            .page-break { page-break-before: always; }
+            h2 { page-break-after: avoid; }
+            table { page-break-inside: auto; }
+            tr { page-break-inside: avoid; }
+        }
+
+        .header { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 3px solid #0066B2; }
+        .logo { width: 48px; height: 48px; background: linear-gradient(135deg, #0066B2, #004A82); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 16px; }
+        .header-text h1 { font-size: 20px; font-weight: 800; color: #0F172A; }
+        .header-text p { font-size: 11px; color: #64748B; }
+        .header-meta { margin-left: auto; text-align: right; font-size: 10px; color: #64748B; }
+
+        h2 { font-size: 15px; font-weight: 700; color: #0066B2; margin: 28px 0 12px; padding-bottom: 6px; border-bottom: 1.5px solid #E2E8F0; }
+        h3 { font-size: 12px; font-weight: 700; color: #334155; margin: 16px 0 8px; }
+
+        table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 10px; }
+        th { background: #F1F5F9; padding: 7px 10px; text-align: left; font-weight: 700; font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; color: #64748B; border-bottom: 2px solid #E2E8F0; }
+        td { padding: 6px 10px; border-bottom: 1px solid #F1F5F9; color: #334155; }
+        tr:hover td { background: #F8FAFC; }
+        .mono { font-family: 'SF Mono', 'Consolas', monospace; font-size: 9px; color: #64748B; }
+
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 9px; font-weight: 700; }
+        .badge-blue { background: #EBF5FF; color: #0066B2; }
+        .badge-green { background: #D1FAE5; color: #059669; }
+        .badge-yellow { background: #FEF3C7; color: #D97706; }
+        .badge-red { background: #FEE2E2; color: #DC2626; }
+        .badge-purple { background: #EDE9FE; color: #7C3AED; }
+        .badge-gray { background: #F1F5F9; color: #475569; }
+
+        .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+        .summary-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 14px; }
+        .summary-card .value { font-size: 22px; font-weight: 800; color: #0F172A; }
+        .summary-card .label { font-size: 10px; color: #64748B; margin-top: 2px; }
+
+        .section-note { background: #EBF5FF; border-left: 3px solid #0066B2; padding: 10px 14px; border-radius: 0 6px 6px 0; margin: 12px 0; font-size: 10px; color: #0066B2; }
+        .footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid #E2E8F0; text-align: center; font-size: 9px; color: #94A3B8; }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <div class="logo">AB</div>
+    <div class="header-text">
+        <h1>AB HUB+ &mdash; Mock Data Report</h1>
+        <p>Datos de prueba del sistema de fidelizacion Advanced Bionics</p>
+    </div>
+    <div class="header-meta">
+        <strong>Version:</strong> V29<br>
+        <strong>Fecha:</strong> 9 Abril 2026<br>
+        <strong>Env:</strong> Desarrollo / Demo
+    </div>
+</div>
+
+<!-- SUMMARY -->
+<div class="summary-grid">
+    <div class="summary-card">
+        <div class="value">25</div>
+        <div class="label">Usuarios totales</div>
+    </div>
+    <div class="summary-card">
+        <div class="value">14</div>
+        <div class="label">Dispositivos registrados</div>
+    </div>
+    <div class="summary-card">
+        <div class="value">8</div>
+        <div class="label">Garantias en proceso</div>
+    </div>
+    <div class="summary-card">
+        <div class="value">6</div>
+        <div class="label">Paises activos</div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<h2>1. Usuarios (25)</h2>
+
+<h3>Clientes (12)</h3>
+<table>
+    <thead><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Pais</th><th>Puntos</th><th>Telefono</th><th>Registro</th></tr></thead>
+    <tbody>
+        <tr><td class="mono">USR-001</td><td><strong>Maria Garcia Restrepo</strong></td><td>maria.garcia@email.com</td><td>COL</td><td><strong>485</strong></td><td>+57 300 123 4567</td><td>2025-03-12</td></tr>
+        <tr><td class="mono">USR-010</td><td><strong>Andres Felipe Rojas</strong></td><td>andres.rojas@email.com</td><td>COL</td><td>120</td><td>+57 310 987 6543</td><td>2025-09-20</td></tr>
+        <tr><td class="mono">USR-011</td><td><strong>Valentina Moreno Diaz</strong></td><td>valentina.moreno@email.com</td><td>COL</td><td>340</td><td>+57 321 555 7890</td><td>2025-06-08</td></tr>
+        <tr><td class="mono">USR-012</td><td><strong>Santiago Ospina Ruiz</strong></td><td>santiago.ospina@email.com</td><td>COL</td><td>55</td><td>+57 315 222 3344</td><td>2026-01-15</td></tr>
+        <tr><td class="mono">USR-013</td><td><strong>Gabriela Hernandez Luna</strong></td><td>gabriela.hernandez@email.com</td><td>MEX</td><td>210</td><td>+52 55 1234 5678</td><td>2025-07-03</td></tr>
+        <tr><td class="mono">USR-014</td><td><strong>Diego Ramirez Torres</strong></td><td>diego.ramirez@email.com</td><td>MEX</td><td><strong>670</strong></td><td>+52 33 8765 4321</td><td>2024-11-22</td></tr>
+        <tr><td class="mono">USR-015</td><td><strong>Camila Flores Gutierrez</strong></td><td>camila.flores@email.com</td><td>MEX</td><td>90</td><td>+52 81 5555 6666</td><td>2026-02-10</td></tr>
+        <tr><td class="mono">USR-016</td><td><strong>Matias Fernandez Ruiz</strong></td><td>matias.fernandez@email.com</td><td>ARG</td><td>415</td><td>+54 11 4444 5555</td><td>2025-04-18</td></tr>
+        <tr><td class="mono">USR-017</td><td><strong>Lucia Alvarez Gomez</strong></td><td>lucia.alvarez@email.com</td><td>ARG</td><td>150</td><td>+54 11 6666 7777</td><td>2025-10-05</td></tr>
+        <tr><td class="mono">USR-018</td><td><strong>Isabella Vargas Mora</strong></td><td>isabella.vargas@email.com</td><td>CRI</td><td>305</td><td>+506 8888 9999</td><td>2025-05-30</td></tr>
+        <tr><td class="mono">USR-019</td><td><strong>Tomas Salazar Vega</strong></td><td>tomas.salazar@email.com</td><td>CHL</td><td>180</td><td>+56 9 7777 8888</td><td>2025-08-14</td></tr>
+        <tr><td class="mono">USR-020</td><td><strong>Mariana Castillo Paredes</strong></td><td>mariana.castillo@email.com</td><td>PER</td><td>75</td><td>+51 999 888 777</td><td>2026-01-28</td></tr>
+    </tbody>
+</table>
+
+<h3>Distribuidores (5)</h3>
+<table>
+    <thead><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Empresa</th><th>Pais</th><th>Telefono</th><th>Registro</th></tr></thead>
+    <tbody>
+        <tr><td class="mono">USR-002</td><td><strong>Carlos Mendez Aguilar</strong></td><td>carlos.mendez@iamx.mx</td><td>Implantes Auditivos MX</td><td>MEX</td><td>+52 55 9876 5432</td><td>2024-06-01</td></tr>
+        <tr><td class="mono">USR-021</td><td><strong>Patricia Lozano Rivera</strong></td><td>patricia.lozano@audiotech.co</td><td>AudioTech Colombia</td><td>COL</td><td>+57 1 234 5678</td><td>2024-08-15</td></tr>
+        <tr><td class="mono">USR-022</td><td><strong>Fernando Rivas</strong></td><td>fernando.rivas@abarg.com</td><td>AB Audiologia Argentina</td><td>ARG</td><td>+54 11 5555 6666</td><td>2025-01-10</td></tr>
+        <tr><td class="mono">USR-023</td><td><strong>Ricardo Jimenez Solis</strong></td><td>ricardo.jimenez@cacr.co.cr</td><td>Centro Auditivo CR</td><td>CRI</td><td>+506 2222 3333</td><td>2025-03-20</td></tr>
+        <tr><td class="mono">USR-024</td><td><strong>Monica Sepulveda</strong></td><td>monica.sepulveda@sonochile.cl</td><td>SonoChile</td><td>CHL</td><td>+56 2 7777 8888</td><td>2025-05-01</td></tr>
+    </tbody>
+</table>
+
+<h3>Especialistas (4)</h3>
+<table>
+    <thead><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Licencia</th><th>Pais</th><th>Registro</th></tr></thead>
+    <tbody>
+        <tr><td class="mono">USR-005</td><td><strong>Laura Torres Medina</strong></td><td>laura.torres@clinica.com</td><td>MN-45678</td><td>ARG</td><td>2025-02-10</td></tr>
+        <tr><td class="mono">USR-025</td><td><strong>Dr. Alejandro Prieto</strong></td><td>a.prieto@hospital.co</td><td>TP-12345</td><td>COL</td><td>2024-09-01</td></tr>
+        <tr><td class="mono">USR-026</td><td><strong>Dra. Carmen Villegas</strong></td><td>c.villegas@orl.mx</td><td>CED-987654</td><td>MEX</td><td>2025-01-20</td></tr>
+        <tr><td class="mono">USR-027</td><td><strong>Dr. Juan Pablo Soto</strong></td><td>jp.soto@audioperu.pe</td><td>CMP-33221</td><td>PER</td><td>2025-07-15</td></tr>
+    </tbody>
+</table>
+
+<h3>Administradores (2) + Super Admins (2)</h3>
+<table>
+    <thead><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Rol</th><th>Pais</th><th>Registro</th></tr></thead>
+    <tbody>
+        <tr><td class="mono">USR-003</td><td><strong>Ana Maria Lopez</strong></td><td>ana.lopez@advancedbionics.com</td><td><span class="badge badge-green">Admin</span></td><td>COL</td><td>2024-06-01</td></tr>
+        <tr><td class="mono">USR-028</td><td><strong>Jorge Gutierrez</strong></td><td>jorge.gutierrez@advancedbionics.com</td><td><span class="badge badge-green">Admin</span></td><td>MEX</td><td>2024-10-01</td></tr>
+        <tr><td class="mono">USR-004</td><td><strong>Roberto Silva Navarro</strong></td><td>roberto.silva@advancedbionics.com</td><td><span class="badge badge-red">Super Admin</span></td><td>COL</td><td>2024-01-01</td></tr>
+        <tr><td class="mono">USR-029</td><td><strong>Elena Rodriguez</strong></td><td>elena.rodriguez@advancedbionics.com</td><td><span class="badge badge-red">Super Admin</span></td><td>MEX</td><td>2024-03-15</td></tr>
+    </tbody>
+</table>
+
+<!-- ============================================================ -->
+<div class="page-break"></div>
+<h2>2. Productos (12)</h2>
+<table>
+    <thead><tr><th>ID</th><th>Nombre</th><th>Modelo</th><th>Categoria</th><th>Precio USD</th><th>Descripcion</th></tr></thead>
+    <tbody>
+        <tr><td class="mono">PRD-001</td><td><strong>Marvel CI</strong></td><td>HiRes Ultra 3D</td><td><span class="badge badge-blue">Implante</span></td><td>&mdash;</td><td>Implante coclear de ultima generacion</td></tr>
+        <tr><td class="mono">PRD-002</td><td><strong>Naida CI Marvel</strong></td><td>M90</td><td><span class="badge badge-purple">Procesador</span></td><td>&mdash;</td><td>Procesador con conectividad Bluetooth</td></tr>
+        <tr><td class="mono">PRD-003</td><td><strong>Sky CI Marvel</strong></td><td>Sky M</td><td><span class="badge badge-purple">Procesador</span></td><td>&mdash;</td><td>Procesador pediatrico resistente</td></tr>
+        <tr><td class="mono">PRD-009</td><td><strong>Naida CI M130</strong></td><td>M130</td><td><span class="badge badge-purple">Procesador</span></td><td>&mdash;</td><td>Premium con AutoSense OS 4.0</td></tr>
+        <tr><td class="mono">PRD-004</td><td><strong>T-Mic 2</strong></td><td>T-Mic 2</td><td><span class="badge badge-gray">Accesorio</span></td><td>$85</td><td>Microfono posicion natural del oido</td></tr>
+        <tr><td class="mono">PRD-005</td><td><strong>AquaCase</strong></td><td>AquaCase</td><td><span class="badge badge-gray">Accesorio</span></td><td>$120</td><td>Proteccion acuatica IP68</td></tr>
+        <tr><td class="mono">PRD-006</td><td><strong>Cable de carga</strong></td><td>PowerCel Cable</td><td><span class="badge badge-gray">Accesorio</span></td><td>$25</td><td>Cable USB-C carga rapida con LED</td></tr>
+        <tr><td class="mono">PRD-007</td><td><strong>Kit de secado</strong></td><td>DryKit Pro</td><td><span class="badge badge-gray">Accesorio</span></td><td>$65</td><td>Secado nocturno UV con desinfeccion</td></tr>
+        <tr><td class="mono">PRD-008</td><td><strong>Bateria recargable</strong></td><td>PowerCel Slim</td><td><span class="badge badge-gray">Accesorio</span></td><td>$95</td><td>Bateria compacta 16h autonomia</td></tr>
+        <tr><td class="mono">PRD-010</td><td><strong>Clip de seguridad</strong></td><td>SafeClip</td><td><span class="badge badge-gray">Accesorio</span></td><td>$18</td><td>Clip anti-perdida con cordon retractil</td></tr>
+        <tr><td class="mono">PRD-011</td><td><strong>Funda protectora</strong></td><td>SoftCase</td><td><span class="badge badge-gray">Accesorio</span></td><td>$22</td><td>Funda de silicona multiples colores</td></tr>
+        <tr><td class="mono">PRD-012</td><td><strong>Roger Select iN</strong></td><td>Roger Select</td><td><span class="badge badge-gray">Accesorio</span></td><td>$950</td><td>Microfono inalambrico para ambientes ruidosos</td></tr>
+    </tbody>
+</table>
+
+<!-- ============================================================ -->
+<h2>3. Dispositivos Registrados (14)</h2>
+<table>
+    <thead><tr><th>ID</th><th>Usuario</th><th>Modelo</th><th>Serial</th><th>Lado</th><th>Compra</th><th>Garantia hasta</th><th>Estado</th></tr></thead>
+    <tbody>
+        <tr><td class="mono">DEV-001</td><td>Maria Garcia R.</td><td>Marvel CI HiRes Ultra 3D</td><td class="mono">MV-2025-001234</td><td>Derecho</td><td>2025-03-12</td><td>2028-03-12</td><td><span class="badge badge-green">Activo</span></td></tr>
+        <tr><td class="mono">DEV-002</td><td>Maria Garcia R.</td><td>Naida CI Marvel M90</td><td class="mono">NM-2025-005678</td><td>Derecho</td><td>2025-03-12</td><td>2027-03-12</td><td><span class="badge badge-green">Activo</span></td></tr>
+        <tr><td class="mono">DEV-003</td><td>Andres F. Rojas</td><td>Marvel CI HiRes Ultra 3D</td><td class="mono">MV-2025-007890</td><td>Izquierdo</td><td>2025-09-20</td><td>2028-09-20</td><td><span class="badge badge-green">Activo</span></td></tr>
+        <tr><td class="mono">DEV-004</td><td>Valentina Moreno</td><td>Naida CI Marvel M90</td><td class="mono">NM-2025-002345</td><td>Bilateral</td><td>2025-06-08</td><td>2027-06-08</td><td><span class="badge badge-green">Activo</span></td></tr>
+        <tr><td class="mono">DEV-005</td><td>Gabriela Hernandez</td><td>Sky CI Marvel</td><td class="mono">SK-2025-004567</td><td>Derecho</td><td>2025-07-03</td><td>2027-07-03</td><td><span class="badge badge-green">Activo</span></td></tr>
+        <tr><td class="mono">DEV-006</td><td>Diego Ramirez</td><td>Marvel CI HiRes Ultra 3D</td><td class="mono">MV-2024-011223</td><td>Bilateral</td><td>2024-11-22</td><td>2027-11-22</td><td><span class="badge badge-green">Activo</span></td></tr>
+        <tr><td class="mono">DEV-007</td><td>Diego Ramirez</td><td>Naida CI M130</td><td class="mono">NM-2025-008899</td><td>Bilateral</td><td>2025-05-10</td><td>2027-05-10</td><td><span class="badge badge-green">Activo</span></td></tr>
+        <tr><td class="mono">DEV-008</td><td>Matias Fernandez</td><td>Naida CI Marvel M90</td><td class="mono">NM-2025-003344</td><td>Izquierdo</td><td>2025-04-18</td><td>2027-04-18</td><td><span class="badge badge-green">Activo</span></td></tr>
+        <tr><td class="mono">DEV-009</td><td>Lucia Alvarez</td><td>Marvel CI HiRes Ultra 3D</td><td class="mono">MV-2025-006677</td><td>Derecho</td><td>2025-10-05</td><td>2028-10-05</td><td><span class="badge badge-green">Activo</span></td></tr>
+        <tr><td class="mono">DEV-010</td><td>Isabella Vargas</td><td>Sky CI Marvel</td><td class="mono">SK-2025-009988</td><td>Derecho</td><td>2025-05-30</td><td>2027-05-30</td><td><span class="badge badge-green">Activo</span></td></tr>
+        <tr><td class="mono">DEV-011</td><td>Tomas Salazar</td><td>Naida CI Marvel M90</td><td class="mono">NM-2025-007766</td><td>Izquierdo</td><td>2025-08-14</td><td>2027-08-14</td><td><span class="badge badge-green">Activo</span></td></tr>
+        <tr><td class="mono">DEV-012</td><td>Camila Flores</td><td>Marvel CI HiRes Ultra 3D</td><td class="mono">MV-2026-000112</td><td>Derecho</td><td>2026-02-10</td><td>2029-02-10</td><td><span class="badge badge-green">Activo</span></td></tr>
+        <tr><td class="mono">DEV-013</td><td>Santiago Ospina</td><td>Naida CI Marvel M90</td><td class="mono">NM-2023-019988</td><td>Derecho</td><td>2023-06-01</td><td style="color:#DC2626; font-weight:700;">2026-06-01</td><td><span class="badge badge-yellow">Por vencer</span></td></tr>
+        <tr><td class="mono">DEV-014</td><td>Mariana Castillo</td><td>Sky CI Marvel</td><td class="mono">SK-2025-011223</td><td>Izquierdo</td><td>2025-11-15</td><td>2027-11-15</td><td><span class="badge badge-yellow">En reparacion</span></td></tr>
+    </tbody>
+</table>
+
+<!-- ============================================================ -->
+<div class="page-break"></div>
+<h2>4. Garantias - Warranty Claims (8)</h2>
+<table>
+    <thead><tr><th>Tracking</th><th>Distribuidor</th><th>Cliente</th><th>Modelo</th><th>Serial</th><th>Estado</th><th>Pais</th><th>Fecha</th></tr></thead>
+    <tbody>
+        <tr><td class="mono">WC-2026-00001</td><td>Carlos Mendez</td><td>Pedro Ramirez</td><td>Naida CI Marvel</td><td class="mono">NM-2024-009876</td><td><span class="badge badge-blue">En revision</span></td><td>MEX</td><td>2026-03-20</td></tr>
+        <tr><td class="mono">WC-2026-00002</td><td>Carlos Mendez</td><td>Sofia Herrera</td><td>Sky CI Marvel</td><td class="mono">SK-2025-003456</td><td><span class="badge badge-green">Aprobada</span></td><td>MEX</td><td>2026-04-01</td></tr>
+        <tr><td class="mono">WC-2026-00003</td><td>Patricia Lozano</td><td>Andres F. Rojas</td><td>Marvel CI</td><td class="mono">MV-2025-007890</td><td><span class="badge badge-yellow">En reparacion</span></td><td>COL</td><td>2026-02-15</td></tr>
+        <tr><td class="mono">WC-2026-00004</td><td>Fernando Rivas</td><td>Lucia Alvarez</td><td>Marvel CI</td><td class="mono">MV-2025-006677</td><td><span class="badge badge-blue">Enviado</span></td><td>ARG</td><td>2026-01-28</td></tr>
+        <tr><td class="mono">WC-2026-00005</td><td>Carlos Mendez</td><td>Camila Flores</td><td>Marvel CI</td><td class="mono">MV-2026-000112</td><td><span class="badge badge-gray">Pendiente</span></td><td>MEX</td><td>2026-04-08</td></tr>
+        <tr><td class="mono">WC-2026-00006</td><td>Patricia Lozano</td><td>Santiago Ospina</td><td>Naida CI Marvel</td><td class="mono">NM-2023-019988</td><td><span class="badge badge-red">Rechazada</span></td><td>COL</td><td>2026-03-05</td></tr>
+        <tr><td class="mono">WC-2025-00018</td><td>Ricardo Jimenez</td><td>Isabella Vargas</td><td>Sky CI Marvel</td><td class="mono">SK-2025-009988</td><td><span class="badge badge-green">Completada</span></td><td>CRI</td><td>2025-12-10</td></tr>
+        <tr><td class="mono">WC-2026-00007</td><td>Monica Sepulveda</td><td>Tomas Salazar</td><td>Naida CI M90</td><td class="mono">NM-2025-007766</td><td><span class="badge badge-blue">IA Revisando</span></td><td>CHL</td><td>2026-04-09</td></tr>
+    </tbody>
+</table>
+
+<div class="section-note">Cada claim tiene un historial de estados con notas detalladas (25 entradas en total). El diagnostico IA (Melody) incluye confianza del 78% al 96%.</div>
+
+<!-- ============================================================ -->
+<h2>5. PQRs (6)</h2>
+<table>
+    <thead><tr><th>Tracking</th><th>Usuario</th><th>Tipo</th><th>Asunto</th><th>Estado</th><th>Prioridad</th><th>Pais</th><th>Fecha</th></tr></thead>
+    <tbody>
+        <tr><td class="mono">PQR-2026-00001</td><td>Maria Garcia</td><td><span class="badge badge-blue">Peticion</span></td><td>Solicitud de cable de repuesto</td><td><span class="badge badge-yellow">En progreso</span></td><td>Media</td><td>COL</td><td>2026-03-25</td></tr>
+        <tr><td class="mono">PQR-2026-00002</td><td>Diego Ramirez</td><td><span class="badge badge-red">Queja</span></td><td>Demora en entrega de bateria</td><td><span class="badge badge-blue">Abierta</span></td><td><strong>Alta</strong></td><td>MEX</td><td>2026-04-02</td></tr>
+        <tr><td class="mono">PQR-2026-00003</td><td>Matias Fernandez</td><td><span class="badge badge-red">Reclamo</span></td><td>Procesador fallo a los 3 meses</td><td><span class="badge badge-yellow">En progreso</span></td><td><strong style="color:#DC2626;">Urgente</strong></td><td>ARG</td><td>2026-03-15</td></tr>
+        <tr><td class="mono">PQR-2026-00004</td><td>Isabella Vargas</td><td><span class="badge badge-green">Sugerencia</span></td><td>Agregar tutorial de natacion</td><td><span class="badge badge-green">Resuelta</span></td><td>Baja</td><td>CRI</td><td>2026-02-20</td></tr>
+        <tr><td class="mono">PQR-2026-00005</td><td>Valentina Moreno</td><td><span class="badge badge-blue">Peticion</span></td><td>Info sobre upgrade a M130</td><td><span class="badge badge-blue">Abierta</span></td><td>Media</td><td>COL</td><td>2026-04-05</td></tr>
+        <tr><td class="mono">PQR-2025-00012</td><td>Gabriela Hernandez</td><td><span class="badge badge-red">Queja</span></td><td>Atencion telefonica deficiente</td><td><span class="badge badge-gray">Cerrada</span></td><td>Media</td><td>MEX</td><td>2025-11-10</td></tr>
+    </tbody>
+</table>
+
+<!-- ============================================================ -->
+<h2>6. Inventario por Distribuidor (18 items)</h2>
+
+<h3>Carlos Mendez &mdash; Mexico (8 items)</h3>
+<table>
+    <thead><tr><th>Producto</th><th>Cantidad</th><th>Min. Stock</th><th>Estado</th></tr></thead>
+    <tbody>
+        <tr><td>T-Mic 2</td><td>12</td><td>5</td><td><span class="badge badge-green">OK</span></td></tr>
+        <tr><td>AquaCase</td><td style="color:#DC2626; font-weight:700;">3</td><td>5</td><td><span class="badge badge-red">Bajo</span></td></tr>
+        <tr><td>Cable de carga</td><td>28</td><td>10</td><td><span class="badge badge-green">OK</span></td></tr>
+        <tr><td>Kit de secado</td><td>8</td><td>5</td><td><span class="badge badge-green">OK</span></td></tr>
+        <tr><td>Bateria recargable</td><td style="color:#DC2626; font-weight:700;">2</td><td>5</td><td><span class="badge badge-red">Critico</span></td></tr>
+        <tr><td>Clip de seguridad</td><td>20</td><td>8</td><td><span class="badge badge-green">OK</span></td></tr>
+        <tr><td>Funda protectora</td><td>15</td><td>10</td><td><span class="badge badge-green">OK</span></td></tr>
+        <tr><td>Roger Select iN</td><td style="color:#DC2626; font-weight:700;">1</td><td>2</td><td><span class="badge badge-red">Critico</span></td></tr>
+    </tbody>
+</table>
+
+<h3>Patricia Lozano &mdash; Colombia (6 items)</h3>
+<table>
+    <thead><tr><th>Producto</th><th>Cantidad</th><th>Min. Stock</th><th>Estado</th></tr></thead>
+    <tbody>
+        <tr><td>T-Mic 2</td><td>7</td><td>5</td><td><span class="badge badge-green">OK</span></td></tr>
+        <tr><td>AquaCase</td><td>10</td><td>5</td><td><span class="badge badge-green">OK</span></td></tr>
+        <tr><td>Cable de carga</td><td>35</td><td>10</td><td><span class="badge badge-green">OK</span></td></tr>
+        <tr><td>Kit de secado</td><td style="color:#D97706; font-weight:700;">4</td><td>5</td><td><span class="badge badge-yellow">Bajo</span></td></tr>
+        <tr><td>Bateria recargable</td><td>14</td><td>8</td><td><span class="badge badge-green">OK</span></td></tr>
+        <tr><td>Roger Select iN</td><td>3</td><td>2</td><td><span class="badge badge-green">OK</span></td></tr>
+    </tbody>
+</table>
+
+<h3>Fernando Rivas &mdash; Argentina (4 items)</h3>
+<table>
+    <thead><tr><th>Producto</th><th>Cantidad</th><th>Min. Stock</th><th>Estado</th></tr></thead>
+    <tbody>
+        <tr><td>T-Mic 2</td><td>5</td><td>5</td><td><span class="badge badge-yellow">Limite</span></td></tr>
+        <tr><td>Cable de carga</td><td>18</td><td>10</td><td><span class="badge badge-green">OK</span></td></tr>
+        <tr><td>Bateria recargable</td><td style="color:#DC2626; font-weight:700;">0</td><td>5</td><td><span class="badge badge-red">Sin stock</span></td></tr>
+        <tr><td>Funda protectora</td><td>9</td><td>5</td><td><span class="badge badge-green">OK</span></td></tr>
+    </tbody>
+</table>
+
+<!-- ============================================================ -->
+<div class="page-break"></div>
+<h2>7. Campanas de Marketing (5)</h2>
+<table>
+    <thead><tr><th>ID</th><th>Titulo</th><th>Tipo</th><th>Dirigida a</th><th>Paises</th><th>Periodo</th><th>Estado</th></tr></thead>
+    <tbody>
+        <tr><td class="mono">CMP-001</td><td><strong>Semana del Cuidado Auditivo</strong></td><td><span class="badge badge-yellow">Promocion</span></td><td>Clientes</td><td>Todos</td><td>07-14 Abr 2026</td><td><span class="badge badge-green">Activa</span></td></tr>
+        <tr><td class="mono">CMP-002</td><td><strong>Lanzamiento Naida CI M130</strong></td><td><span class="badge badge-blue">Educativa</span></td><td>Clientes, Especialistas</td><td>COL, MEX</td><td>01-30 Abr 2026</td><td><span class="badge badge-green">Activa</span></td></tr>
+        <tr><td class="mono">CMP-003</td><td><strong>Programa de Referidos Q2</strong></td><td><span class="badge badge-yellow">Promocion</span></td><td>Clientes, Especialistas</td><td>Todos</td><td>01 Abr - 30 Jun 2026</td><td><span class="badge badge-green">Activa</span></td></tr>
+        <tr><td class="mono">CMP-004</td><td><strong>Capacitacion Distribuidores - BT</strong></td><td><span class="badge badge-blue">Educativa</span></td><td>Distribuidores</td><td>Todos</td><td>15 Abr 2026</td><td><span class="badge badge-green">Activa</span></td></tr>
+        <tr><td class="mono">CMP-005</td><td><strong>Encuesta de Satisfaccion 2025</strong></td><td><span class="badge badge-gray">General</span></td><td>Todos</td><td>Todos</td><td>15 Ene - 28 Feb 2026</td><td><span class="badge badge-gray">Finalizada</span></td></tr>
+    </tbody>
+</table>
+
+<!-- ============================================================ -->
+<h2>8. Beneficios Disponibles (8)</h2>
+<table>
+    <thead><tr><th>ID</th><th>Beneficio</th><th>Tipo</th><th>Puntos</th><th>Descripcion</th></tr></thead>
+    <tbody>
+        <tr><td class="mono">BEN-006</td><td><strong>Envio prioritario</strong></td><td><span class="badge badge-blue">Servicio</span></td><td>100</td><td>Envio express gratis en proximo pedido</td></tr>
+        <tr><td class="mono">BEN-002</td><td><strong>15% descuento accesorios</strong></td><td><span class="badge badge-yellow">Descuento</span></td><td>150</td><td>En proxima compra de accesorios</td></tr>
+        <tr><td class="mono">BEN-007</td><td><strong>Funda personalizada</strong></td><td><span class="badge badge-gray">Accesorio</span></td><td>180</td><td>Funda SoftCase color a eleccion</td></tr>
+        <tr><td class="mono">BEN-001</td><td><strong>Kit de limpieza gratis</strong></td><td><span class="badge badge-gray">Accesorio</span></td><td>200</td><td>Kit profesional con pano, cepillo y spray</td></tr>
+        <tr><td class="mono">BEN-004</td><td><strong>Bateria extra</strong></td><td><span class="badge badge-gray">Accesorio</span></td><td>350</td><td>Bateria PowerCel Slim adicional</td></tr>
+        <tr><td class="mono">BEN-005</td><td><strong>AquaCase gratis</strong></td><td><span class="badge badge-gray">Accesorio</span></td><td>400</td><td>Proteccion acuatica para procesador</td></tr>
+        <tr><td class="mono">BEN-003</td><td><strong>Revision audiologica</strong></td><td><span class="badge badge-blue">Servicio</span></td><td>500</td><td>Sesion MAP gratuita con especialista</td></tr>
+        <tr><td class="mono">BEN-008</td><td><strong>30% en Roger Select</strong></td><td><span class="badge badge-yellow">Descuento</span></td><td>800</td><td>Descuento especial en Roger Select iN</td></tr>
+    </tbody>
+</table>
+
+<!-- ============================================================ -->
+<h2>9. Proveedores por Pais (9)</h2>
+<table>
+    <thead><tr><th>ID</th><th>Nombre</th><th>Tipo</th><th>Pais</th><th>Direccion</th><th>Telefono</th><th>Email</th></tr></thead>
+    <tbody>
+        <tr><td class="mono">PROV-001</td><td><strong>AudioTech Colombia</strong></td><td>Distribuidor</td><td>COL</td><td>Bogota, Calle 100 #15-20</td><td>+57 1 234 5678</td><td>info@audiotech.co</td></tr>
+        <tr><td class="mono">PROV-005</td><td><strong>Clinica Rivas Audicion</strong></td><td>Centro Servicio</td><td>COL</td><td>Medellin, El Poblado</td><td>+57 4 444 5555</td><td>citas@rivasaudicion.co</td></tr>
+        <tr><td class="mono">PROV-006</td><td><strong>Centro Audiologico del Caribe</strong></td><td>Centro Servicio</td><td>COL</td><td>Barranquilla, Calle 84</td><td>+57 5 333 2222</td><td>contacto@cacdelcaribe.co</td></tr>
+        <tr><td class="mono">PROV-002</td><td><strong>Implantes Auditivos MX</strong></td><td>Distribuidor</td><td>MEX</td><td>CDMX, Polanco</td><td>+52 55 9876 5432</td><td>ventas@iamx.mx</td></tr>
+        <tr><td class="mono">PROV-007</td><td><strong>AudioMed Monterrey</strong></td><td>Centro Servicio</td><td>MEX</td><td>Monterrey, San Pedro</td><td>+52 81 8888 9999</td><td>atencion@audiomed.mx</td></tr>
+        <tr><td class="mono">PROV-003</td><td><strong>AB Audiologia Argentina</strong></td><td>Distribuidor</td><td>ARG</td><td>Buenos Aires, Recoleta</td><td>+54 11 5555 6666</td><td>contacto@abarg.com</td></tr>
+        <tr><td class="mono">PROV-004</td><td><strong>Centro Auditivo CR</strong></td><td>Centro Servicio</td><td>CRI</td><td>San Jose, Escazu</td><td>+506 2222 3333</td><td>info@cacr.co.cr</td></tr>
+        <tr><td class="mono">PROV-008</td><td><strong>SonoChile</strong></td><td>Distribuidor</td><td>CHL</td><td>Santiago, Providencia</td><td>+56 2 7777 8888</td><td>contacto@sonochile.cl</td></tr>
+        <tr><td class="mono">PROV-009</td><td><strong>AB Peru Distribucion</strong></td><td>Distribuidor</td><td>PER</td><td>Lima, San Isidro</td><td>+51 1 444 5555</td><td>ventas@abperu.pe</td></tr>
+    </tbody>
+</table>
+
+<!-- ============================================================ -->
+<h2>10. Actividad Pre-cargada</h2>
+
+<h3>Checklist Completions (10 registros)</h3>
+<div class="section-note">Maria Garcia (USR-001): Ayer completo 5/8 items. Hoy lleva 2/8. Diego Ramirez (USR-014): Hoy 2 items, ayer 1 item.</div>
+
+<h3>Tutorial Completions (11 registros)</h3>
+<table>
+    <thead><tr><th>Usuario</th><th>Tutoriales completados</th><th>Puntos ganados</th></tr></thead>
+    <tbody>
+        <tr><td>Maria Garcia (USR-001)</td><td>3 de 10 (Primeros pasos, Cuidado diario, Limpieza T-Mic)</td><td>65 pts</td></tr>
+        <tr><td>Diego Ramirez (USR-014)</td><td>5 de 10 (Primeros pasos, Cuidado, Bluetooth, Problemas, Ambientes ruidosos)</td><td>115 pts</td></tr>
+        <tr><td>Matias Fernandez (USR-016)</td><td>1 de 10 (Primeros pasos)</td><td>30 pts</td></tr>
+        <tr><td>Isabella Vargas (USR-018)</td><td>2 de 10 (Primeros pasos, Natacion con AquaCase)</td><td>50 pts</td></tr>
+    </tbody>
+</table>
+
+<h3>Beneficios Canjeados (5 registros)</h3>
+<table>
+    <thead><tr><th>Usuario</th><th>Beneficio</th><th>Puntos</th><th>Estado</th><th>Fecha</th></tr></thead>
+    <tbody>
+        <tr><td>Diego Ramirez</td><td>15% descuento accesorios</td><td>150</td><td><span class="badge badge-green">Entregado</span></td><td>2025-08-15</td></tr>
+        <tr><td>Diego Ramirez</td><td>Envio prioritario</td><td>100</td><td><span class="badge badge-green">Entregado</span></td><td>2025-10-01</td></tr>
+        <tr><td>Matias Fernandez</td><td>Kit de limpieza gratis</td><td>200</td><td><span class="badge badge-blue">Aprobado</span></td><td>2026-03-20</td></tr>
+        <tr><td>Maria Garcia</td><td>15% descuento accesorios</td><td>150</td><td><span class="badge badge-green">Entregado</span></td><td>2026-01-10</td></tr>
+        <tr><td>Isabella Vargas</td><td>Envio prioritario</td><td>100</td><td><span class="badge badge-gray">Pendiente</span></td><td>2026-04-05</td></tr>
+    </tbody>
+</table>
+
+<h3>Solicitudes de Accesorios (5 registros)</h3>
+<table>
+    <thead><tr><th>Usuario</th><th>Producto</th><th>Cant.</th><th>Estado</th><th>Pais</th><th>Fecha</th></tr></thead>
+    <tbody>
+        <tr><td>Maria Garcia</td><td>Cable de carga</td><td>2</td><td><span class="badge badge-green">Entregado</span></td><td>COL</td><td>2025-12-01</td></tr>
+        <tr><td>Diego Ramirez</td><td>AquaCase</td><td>1</td><td><span class="badge badge-blue">Enviado</span></td><td>MEX</td><td>2026-03-28</td></tr>
+        <tr><td>Valentina Moreno</td><td>Bateria recargable</td><td>1</td><td><span class="badge badge-gray">Pendiente</span></td><td>COL</td><td>2026-04-07</td></tr>
+        <tr><td>Isabella Vargas</td><td>Kit de secado</td><td>1</td><td><span class="badge badge-yellow">Confirmado</span></td><td>CRI</td><td>2026-04-03</td></tr>
+        <tr><td>Gabriela Hernandez</td><td>Roger Select iN</td><td>1</td><td><span class="badge badge-gray">Pendiente</span></td><td>MEX</td><td>2026-04-08</td></tr>
+    </tbody>
+</table>
+
+<!-- FOOTER -->
+<div class="footer">
+    <p><strong>AB HUB+ Mock Data Report</strong> &mdash; Generado el 9 de Abril de 2026 &mdash; Advanced Bionics, A Sonova Brand</p>
+    <p>Este documento contiene datos ficticios para pruebas y demostracion del sistema.</p>
+</div>
+
+</body>
+</html>
