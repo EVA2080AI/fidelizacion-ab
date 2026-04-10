@@ -6,8 +6,8 @@ window.AB = window.AB || {};
 // --- Global Actions ---
 AB.Actions = {
     // Auth
-    logout() {
-        AB.Auth.logout();
+    async logout() {
+        await AB.Auth.logout();
         AB.Chat.clearHistory();
         location.reload();
     },
@@ -372,11 +372,19 @@ AB.Actions = {
 
 // --- Main App ---
 AB.App = {
-    init() {
+    authMode: 'signup', // 'signup' or 'signin'
+
+    async init() {
+        // Initialize Supabase first (if configured)
+        AB.Supabase.init();
+
         // Initialize modules
         AB.DB.init();
-        AB.Auth.init();
+        await AB.Auth.init();
         AB.Router.init();
+
+        // Show correct auth UI
+        this.setupLoginUI();
 
         // Check auth state
         if (AB.Auth.isLoggedIn()) {
@@ -389,6 +397,74 @@ AB.App = {
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js').catch(() => {});
         }
+    },
+
+    setupLoginUI() {
+        const useSupabase = AB.Supabase.isConfigured;
+        const sbFields = document.getElementById('supabase-auth-fields');
+        const demoFields = document.getElementById('demo-auth-fields');
+        if (sbFields) sbFields.style.display = useSupabase ? 'block' : 'none';
+        if (demoFields) demoFields.style.display = useSupabase ? 'none' : 'block';
+    },
+
+    toggleAuthMode() {
+        this.authMode = this.authMode === 'signup' ? 'signin' : 'signup';
+        const btn = document.querySelector('#supabase-auth-fields .login-btn');
+        const link = document.getElementById('auth-toggle-link');
+        const nameField = document.getElementById('login-name-sb')?.parentElement;
+        const roleField = document.getElementById('login-role-sb')?.parentElement;
+
+        if (this.authMode === 'signin') {
+            if (btn) btn.textContent = 'Iniciar Sesion';
+            if (btn) btn.setAttribute('onclick', 'AB.App.supabaseSignIn()');
+            if (link) link.textContent = 'Crear cuenta';
+            if (nameField) nameField.style.display = 'none';
+            if (roleField) roleField.style.display = 'none';
+        } else {
+            if (btn) btn.textContent = 'Crear Cuenta';
+            if (btn) btn.setAttribute('onclick', 'AB.App.supabaseSignUp()');
+            if (link) link.textContent = 'Iniciar sesion';
+            if (nameField) nameField.style.display = 'block';
+            if (roleField) roleField.style.display = 'block';
+        }
+    },
+
+    async supabaseSignUp() {
+        const name = document.getElementById('login-name-sb')?.value.trim();
+        const email = document.getElementById('login-email')?.value.trim();
+        const password = document.getElementById('login-password')?.value;
+        const role = document.getElementById('login-role-sb')?.value;
+        const country = document.getElementById('selected-country')?.value;
+
+        if (!name || !email || !password) { this.toast('Completa todos los campos', 'error'); return; }
+        if (password.length < 6) { this.toast('La contrasena debe tener al menos 6 caracteres', 'error'); return; }
+
+        const btn = document.querySelector('#supabase-auth-fields .login-btn');
+        if (btn) { btn.disabled = true; btn.textContent = 'Creando cuenta...'; }
+
+        const result = await AB.Auth.signUp(email, password, name, role, country);
+        if (result) {
+            this.showApp();
+            this.toast(`Bienvenido, ${name}`, 'success');
+        }
+        if (btn) { btn.disabled = false; btn.textContent = 'Crear Cuenta'; }
+    },
+
+    async supabaseSignIn() {
+        const email = document.getElementById('login-email')?.value.trim();
+        const password = document.getElementById('login-password')?.value;
+
+        if (!email || !password) { this.toast('Ingresa email y contrasena', 'error'); return; }
+
+        const btn = document.querySelector('#supabase-auth-fields .login-btn');
+        if (btn) { btn.disabled = true; btn.textContent = 'Autenticando...'; }
+
+        const result = await AB.Auth.signIn(email, password);
+        if (result) {
+            this.showApp();
+            this.toast(`Bienvenido, ${result.name}`, 'success');
+        }
+        if (btn) { btn.disabled = false; btn.textContent = 'Iniciar Sesion'; }
     },
 
     showLogin() {

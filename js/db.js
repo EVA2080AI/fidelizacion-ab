@@ -1,17 +1,50 @@
 /* ============================================================
    AB HUB+ Data Layer
-   localStorage-based with Supabase-ready structure
+   Dual mode: Supabase (when configured) or localStorage (fallback)
    ============================================================ */
 window.AB = window.AB || {};
 
 AB.DB = {
     PREFIX: 'ab_hub_',
+    useSupabase: false,
 
     init() {
-        if (!this.get('initialized')) {
-            this.seedData();
-            this.set('initialized', true);
+        // Check if Supabase is configured
+        this.useSupabase = AB.Supabase && AB.Supabase.isConfigured;
+
+        if (!this.useSupabase) {
+            // localStorage fallback mode
+            if (!this.get('initialized')) {
+                this.seedData();
+                this.set('initialized', true);
+            }
         }
+    },
+
+    // --- Supabase-aware wrappers ---
+    async asyncGetAll(collection) {
+        if (this.useSupabase) return AB.Supabase.select(collection);
+        return this.getAll(collection);
+    },
+    async asyncGetById(collection, id) {
+        if (this.useSupabase) return AB.Supabase.selectOne(collection, id);
+        return this.getById(collection, id);
+    },
+    async asyncInsert(collection, item) {
+        if (this.useSupabase) return AB.Supabase.insert(collection, item);
+        return this.insert(collection, item);
+    },
+    async asyncUpdate(collection, id, updates) {
+        if (this.useSupabase) return AB.Supabase.update(collection, id, updates);
+        return this.update(collection, id, updates);
+    },
+    async asyncDelete(collection, id) {
+        if (this.useSupabase) return AB.Supabase.delete(collection, id);
+        return this.delete(collection, id);
+    },
+    async asyncQuery(collection, filterFn, supabaseOpts) {
+        if (this.useSupabase && supabaseOpts) return AB.Supabase.select(collection, supabaseOpts);
+        return this.query(collection, filterFn);
     },
 
     // --- Core CRUD ---

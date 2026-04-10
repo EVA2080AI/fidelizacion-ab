@@ -1,8 +1,9 @@
-const CACHE_NAME = 'ab-hub-v11';
+const CACHE_NAME = 'ab-hub-v12';
 const ASSETS = [
     './',
     './index.html',
     './css/styles.css',
+    './js/supabase-client.js',
     './js/db.js',
     './js/auth.js',
     './js/router.js',
