@@ -117,19 +117,22 @@ AB.Router = {
         setTimeout(() => {
             const renderer = this.getViewRenderer(role, viewId);
             if (renderer) {
-                content.innerHTML = renderer();
+                content.innerHTML = `<div class="page-enter">${renderer()}</div>`;
             } else {
                 content.innerHTML = `
-                    <div class="empty-state">
+                    <div class="empty-state page-enter">
                         <i data-lucide="construction"></i>
                         <h3>Vista en construccion</h3>
                         <p>Esta seccion estara disponible pronto.</p>
+                        <button class="btn btn-outline" style="margin-top:var(--sp-4);" onclick="AB.Router.navigate('home')">Volver al inicio</button>
                     </div>
                 `;
             }
             if (window.lucide) lucide.createIcons();
             this.bindViewEvents(viewId);
-        }, 200);
+            // Scroll to top on view change
+            content.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 150);
     },
 
     getNavItems() {

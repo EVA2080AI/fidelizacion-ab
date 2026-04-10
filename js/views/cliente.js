@@ -21,35 +21,43 @@ AB.Views.cliente = {
 
         AB.Auth.refreshUser();
 
+        const greeting = new Date().getHours() < 12 ? 'Buenos dias' : new Date().getHours() < 18 ? 'Buenas tardes' : 'Buenas noches';
+
         return `
         <div class="page-header">
-            <h1>Bienvenido, ${user.name.split(' ')[0]}</h1>
+            <h1>${greeting}, ${user.name.split(' ')[0]}</h1>
             <p>Tu centro de control de dispositivos Advanced Bionics</p>
         </div>
 
         <!-- Warranty Hero Card -->
         ${device ? `
-        <div class="warranty-card" style="margin-bottom:var(--sp-6); cursor:pointer;" onclick="AB.Router.navigate('warranty')">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div class="warranty-card" onclick="AB.Router.navigate('warranty')">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; position:relative; z-index:1;">
                 <div>
-                    <p style="opacity:0.8; font-size:0.875rem; margin-bottom:var(--sp-2);">Garantia de tu ${device.model}</p>
+                    <p style="opacity:0.7; font-size:0.8125rem; margin-bottom:var(--sp-2); text-transform:uppercase; letter-spacing:0.06em; font-weight:600;">Garantia &mdash; ${device.model}</p>
                     <div class="warranty-days">${daysLeft}</div>
-                    <div class="warranty-label">dias restantes</div>
+                    <div class="warranty-label">dias restantes de cobertura</div>
                 </div>
-                <div style="text-align:right; opacity:0.8;">
-                    <p style="font-size:0.8125rem;">S/N: ${device.serial_number}</p>
-                    <p style="font-size:0.8125rem;">Vence: ${new Date(device.warranty_expiry).toLocaleDateString('es')}</p>
+                <div style="text-align:right; opacity:0.7; font-size:0.8125rem;">
+                    <p style="margin-bottom:4px;">S/N: ${device.serial_number}</p>
+                    <p>Vence: ${new Date(device.warranty_expiry).toLocaleDateString('es', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                    ${daysLeft < 90 ? '<span class="badge" style="background:rgba(220,38,38,0.3); color:#fff; margin-top:8px;">Renovar pronto</span>' : ''}
                 </div>
             </div>
-            <div class="progress" style="margin-top:var(--sp-5); background:rgba(255,255,255,0.2);">
-                <div class="progress-bar" style="width:${warrantyPercent}%; background:${daysLeft < 90 ? 'var(--error)' : daysLeft < 180 ? 'var(--warning)' : '#fff'};"></div>
+            <div class="progress" style="margin-top:var(--sp-6); background:rgba(255,255,255,0.15); height:6px;">
+                <div class="progress-bar" style="width:${warrantyPercent}%; background:${daysLeft < 90 ? '#F87171' : daysLeft < 180 ? '#FBBF24' : 'rgba(255,255,255,0.8)'};"></div>
             </div>
         </div>` : `
-        <div class="card" style="margin-bottom:var(--sp-6); text-align:center; padding:var(--sp-8);">
-            <i data-lucide="cpu" style="width:48px; height:48px; color:var(--gray-300); margin:0 auto var(--sp-4);"></i>
-            <h3>No tienes dispositivos registrados</h3>
-            <p class="text-muted">Contacta a tu distribuidor para registrar tu dispositivo.</p>
+        <div class="card" style="text-align:center; padding:var(--sp-10);">
+            <div style="width:72px; height:72px; background:var(--ab-blue-50); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto var(--sp-4);">
+                <i data-lucide="cpu" style="width:36px; height:36px; color:var(--ab-blue);"></i>
+            </div>
+            <h3>Registra tu dispositivo</h3>
+            <p class="text-muted" style="max-width:320px; margin:var(--sp-2) auto var(--sp-5);">Contacta a tu distribuidor local para vincular tu implante o procesador.</p>
+            <button class="btn btn-primary" onclick="AB.Chat.sendMessage('Como registro mi dispositivo?')">Preguntar a Melody</button>
         </div>`}
+
+        <div style="height:var(--sp-6);"></div>
 
         <!-- Quick Stats -->
         <div class="grid grid-4" style="margin-bottom:var(--sp-6);">
@@ -77,36 +85,45 @@ AB.Views.cliente = {
 
         <!-- Quick Actions Grid -->
         <h2 style="margin-bottom:var(--sp-4);">Acciones Rapidas</h2>
-        <div class="grid grid-3" style="margin-bottom:var(--sp-6);">
+        <div class="grid grid-3">
             <div class="card card-clickable" onclick="AB.Router.navigate('checklist')">
                 <div style="display:flex; align-items:center; gap:var(--sp-3); margin-bottom:var(--sp-3);">
-                    <div style="width:40px; height:40px; background:var(--success-light); border-radius:var(--radius-md); display:flex; align-items:center; justify-content:center; color:var(--success);">
+                    <div style="width:44px; height:44px; background:var(--success-light); border-radius:var(--radius-lg); display:flex; align-items:center; justify-content:center; color:var(--success);">
                         <i data-lucide="check-square"></i>
                     </div>
-                    <h3>Checklist Diario</h3>
+                    <div>
+                        <h3>Checklist Diario</h3>
+                        <span class="text-xs text-muted">${completedToday}/${totalChecklist} completados</span>
+                    </div>
                 </div>
-                <p class="text-sm text-muted">Completa tu rutina de cuidado y gana puntos.</p>
-                <div class="progress" style="margin-top:var(--sp-3);">
+                <p class="text-sm text-muted" style="margin-bottom:var(--sp-3);">Cuida tu dispositivo y gana puntos.</p>
+                <div class="progress">
                     <div class="progress-bar success" style="width:${totalChecklist ? (completedToday / totalChecklist * 100) : 0}%;"></div>
                 </div>
             </div>
             <div class="card card-clickable" onclick="AB.Router.navigate('tutorials')">
                 <div style="display:flex; align-items:center; gap:var(--sp-3); margin-bottom:var(--sp-3);">
-                    <div style="width:40px; height:40px; background:var(--info-light); border-radius:var(--radius-md); display:flex; align-items:center; justify-content:center; color:var(--info);">
+                    <div style="width:44px; height:44px; background:var(--info-light); border-radius:var(--radius-lg); display:flex; align-items:center; justify-content:center; color:var(--info);">
                         <i data-lucide="play-circle"></i>
                     </div>
-                    <h3>Ver Tutoriales</h3>
+                    <div>
+                        <h3>Tutoriales</h3>
+                        <span class="text-xs text-muted">${AB.DB.getAll('tutorials').length} disponibles</span>
+                    </div>
                 </div>
-                <p class="text-sm text-muted">Aprende tips y gana puntos con cada tutorial.</p>
+                <p class="text-sm text-muted">Aprende tips y gana hasta 30 pts por video.</p>
             </div>
             <div class="card card-clickable" onclick="AB.Router.navigate('accessories')">
                 <div style="display:flex; align-items:center; gap:var(--sp-3); margin-bottom:var(--sp-3);">
-                    <div style="width:40px; height:40px; background:var(--ab-blue-50); border-radius:var(--radius-md); display:flex; align-items:center; justify-content:center; color:var(--ab-blue);">
+                    <div style="width:44px; height:44px; background:var(--ab-blue-50); border-radius:var(--radius-lg); display:flex; align-items:center; justify-content:center; color:var(--ab-blue);">
                         <i data-lucide="shopping-bag"></i>
                     </div>
-                    <h3>Comprar Accesorios</h3>
+                    <div>
+                        <h3>Accesorios</h3>
+                        <span class="text-xs text-muted">${AB.DB.query('products', p => p.category === 'accessory').length} productos</span>
+                    </div>
                 </div>
-                <p class="text-sm text-muted">Explora accesorios compatibles para tu dispositivo.</p>
+                <p class="text-sm text-muted">Baterias, cables, kits y mas para tu procesador.</p>
             </div>
         </div>`;
     },
